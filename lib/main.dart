@@ -1,3 +1,8 @@
+import 'dart:ui';
+import 'dart:io';
+import 'dart:core';
+import 'dart:convert';
+// import 'package:udp/udp.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -65,6 +70,34 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final _offsets = <Offset>[];
+    // var data = "Hello, World";
+    // var codec = new Utf8Codec();
+    // List<int> dataToSend = codec.encode(data);
+    var addressesIListenFrom = InternetAddress.anyIPv4;
+    int portIListenOn = 65002; //0 is random
+    RawDatagramSocket.bind(addressesIListenFrom, portIListenOn)
+        .then((RawDatagramSocket udpSocket) {
+      udpSocket.forEach((RawSocketEvent event) {
+        if (event == RawSocketEvent.read) {
+          Datagram dg = udpSocket.receive();
+          // dg.data.forEach((x) => print(utf8.decode(x)));
+          // dg.data.forEach((x) => print(utf8.decode(x)));
+          var coordinates = utf8.decode(dg.data);
+          //print(utf8.decode(dg.data));
+          var indxFirstSemicolon = coordinates.indexOf(";");
+          var x = coordinates.substring(0, indxFirstSemicolon);
+          var y =
+              coordinates.substring(indxFirstSemicolon, coordinates.length - 1);
+          print("x: $x, y: $y");
+        }
+      });
+      // udpSocket.send(dataToSend, addressesIListenFrom, portIListenOn);
+      print('Did send data on the stream..');
+    });
+
+    _offsets.add(Offset(50.0, 50.0));
+    _offsets.add(Offset(60.0, 60.0));
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -72,11 +105,6 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
@@ -97,6 +125,12 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Container(
+              width: 300, //double.infinity,
+              height: 300, //double.infinity,
+              color: Colors.yellow,
+              child: CustomPaint(painter: FaceOutlinePainter(_offsets)),
+            ),
             Text(
               'You have pushed the button this many times:',
             ),
@@ -114,4 +148,32 @@ class _MyHomePageState extends State<MyHomePage> {
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
+}
+
+class FaceOutlinePainter extends CustomPainter {
+  final offsets;
+
+  FaceOutlinePainter(this.offsets) : super();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    // Define a paint object
+    final paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 4.0
+      ..color = Colors.indigo;
+
+    // Left eye
+    // canvas.drawRRect(
+    //   RRect.fromRectAndRadius(
+    //       Rect.fromLTWH(20, 40, 10, 10), Radius.circular(20)),
+    //   paint,
+    // );
+    for (var offset in offsets) {
+      canvas.drawPoints(PointMode.points, [offset], paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(FaceOutlinePainter oldDelegate) => true;
 }
