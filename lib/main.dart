@@ -56,6 +56,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  final _offsets = <Offset>[];
 
   void _incrementCounter() {
     setState(() {
@@ -70,7 +71,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final _offsets = <Offset>[];
     // var data = "Hello, World";
     // var codec = new Utf8Codec();
     // List<int> dataToSend = codec.encode(data);
@@ -86,18 +86,27 @@ class _MyHomePageState extends State<MyHomePage> {
           var coordinates = utf8.decode(dg.data);
           //print(utf8.decode(dg.data));
           var indxFirstSemicolon = coordinates.indexOf(";");
-          var x = coordinates.substring(0, indxFirstSemicolon);
-          var y =
-              coordinates.substring(indxFirstSemicolon, coordinates.length - 1);
-          print("x: $x, y: $y");
+          var x = coordinates
+              .substring(0, indxFirstSemicolon)
+              .replaceAll(new RegExp(r','), '.');
+
+          var y = coordinates
+              .substring(indxFirstSemicolon + 1, coordinates.length - 1)
+              .replaceAll(new RegExp(r','), '.');
+
+          // print(x + " " + y);
+          if (x != "0.0") {
+            setState(() {
+              _offsets
+                  .add(Offset(double.parse(x) * 300, double.parse(y) * 300));
+            });
+          }
         }
       });
       // udpSocket.send(dataToSend, addressesIListenFrom, portIListenOn);
       print('Did send data on the stream..');
     });
 
-    _offsets.add(Offset(50.0, 50.0));
-    _offsets.add(Offset(60.0, 60.0));
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -157,6 +166,7 @@ class FaceOutlinePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    print("Paint something");
     // Define a paint object
     final paint = Paint()
       ..style = PaintingStyle.stroke
