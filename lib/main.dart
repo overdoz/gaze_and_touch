@@ -75,35 +75,39 @@ class _MyHomePageState extends State<MyHomePage> {
     // var codec = new Utf8Codec();
     // List<int> dataToSend = codec.encode(data);
     var addressesIListenFrom = InternetAddress.anyIPv4;
-    int portIListenOn = 65002; //0 is random
+    int portIListenOn = 10000; //0 is random
     RawDatagramSocket.bind(addressesIListenFrom, portIListenOn)
         .then((RawDatagramSocket udpSocket) {
       udpSocket.forEach((RawSocketEvent event) {
         if (event == RawSocketEvent.read) {
           Datagram dg = udpSocket.receive();
-          // dg.data.forEach((x) => print(utf8.decode(x)));
-          // dg.data.forEach((x) => print(utf8.decode(x)));
+
+          /// read input coordinates and find semicolon for later parsing
           var coordinates = utf8.decode(dg.data);
-          //print(utf8.decode(dg.data));
           var indxFirstSemicolon = coordinates.indexOf(";");
-          var x = coordinates
+
+          /// coordinates as strings
+          var xDecode = coordinates
               .substring(0, indxFirstSemicolon)
               .replaceAll(new RegExp(r','), '.');
 
-          var y = coordinates
+          var yDecode = coordinates
               .substring(indxFirstSemicolon + 1, coordinates.length - 1)
               .replaceAll(new RegExp(r','), '.');
 
-          // print(x + " " + y);
-          if (x != "0.0") {
+          /// coodinates as double
+          var x = double.parse(xDecode);
+          var y = double.parse(yDecode);
+
+          /// remove outliers and add gazepoint to array
+          /// setState() ensures a rerender
+          if (x != 0.0) {
             setState(() {
-              _offsets
-                  .add(Offset(double.parse(x) * 300, double.parse(y) * 300));
+              _offsets.add(Offset(x * 300, y * 300));
             });
           }
         }
       });
-      // udpSocket.send(dataToSend, addressesIListenFrom, portIListenOn);
       print('Did send data on the stream..');
     });
 
@@ -117,7 +121,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
-        child: Column(
+        child: Stack(
           // Column is also a layout widget. It takes a list of children and
           // arranges them vertically. By default, it sizes itself to fit its
           // children horizontally, and tries to be as tall as its parent.
@@ -132,21 +136,27 @@ class _MyHomePageState extends State<MyHomePage> {
           // center the children vertically; the main axis here is the vertical
           // axis because Columns are vertical (the cross axis would be
           // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Container(
-              width: 300, //double.infinity,
-              height: 300, //double.infinity,
+              width: double.infinity, //double.infinity,
+              height: double.infinity, //double.infinity,
               color: Colors.yellow,
               child: CustomPaint(painter: FaceOutlinePainter(_offsets)),
             ),
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'You have pushed the button this many times:',
+                  ),
+                  Text(
+                    '$_counter',
+                    style: Theme.of(context).textTheme.headline4,
+                  ),
+                ],
+              ),
+            )
           ],
         ),
       ),
