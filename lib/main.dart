@@ -56,7 +56,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
-  final _offsets = <Offset>[];
+  final _offsets = <Offset>[for (var i = 0; i < 10; i++) Offset(0, 0)];
 
   void _incrementCounter() {
     setState(() {
@@ -71,11 +71,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // var data = "Hello, World";
-    // var codec = new Utf8Codec();
-    // List<int> dataToSend = codec.encode(data);
+    /// Screen height and width
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+
     var addressesIListenFrom = InternetAddress.anyIPv4;
-    int portIListenOn = 10000; //0 is random
+    int portIListenOn = 65002; //0 is random
     RawDatagramSocket.bind(addressesIListenFrom, portIListenOn)
         .then((RawDatagramSocket udpSocket) {
       udpSocket.forEach((RawSocketEvent event) {
@@ -100,10 +101,11 @@ class _MyHomePageState extends State<MyHomePage> {
           var y = double.parse(yDecode);
 
           /// remove outliers and add gazepoint to array
-          /// setState() ensures a rerender
+          /// setState() ensures rerendering
           if (x != 0.0) {
             setState(() {
-              _offsets.add(Offset(x * 300, y * 300));
+              _offsets.add(Offset(x * width, y * height));
+              _offsets.removeAt(0);
             });
           }
         }
@@ -176,19 +178,13 @@ class FaceOutlinePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    print("Paint something");
     // Define a paint object
     final paint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 4.0
       ..color = Colors.indigo;
 
-    // Left eye
-    // canvas.drawRRect(
-    //   RRect.fromRectAndRadius(
-    //       Rect.fromLTWH(20, 40, 10, 10), Radius.circular(20)),
-    //   paint,
-    // );
+    // iterate through all gazepoints
     for (var offset in offsets) {
       canvas.drawPoints(PointMode.points, [offset], paint);
     }
