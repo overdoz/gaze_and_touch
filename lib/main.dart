@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'dart:io';
 import 'dart:core';
 import 'dart:convert';
+import 'dart:math';
 // import 'package:udp/udp.dart';
 import 'package:flutter/material.dart';
 
@@ -56,7 +57,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
-  final _offsets = <Offset>[for (var i = 0; i < 10; i++) Offset(0, 0)];
+  final _offsets = <Offset>[for (var i = 0; i < 10; i++) Offset(200, 200)];
 
   void _incrementCounter() {
     setState(() {
@@ -142,31 +143,46 @@ class _MyHomePageState extends State<MyHomePage> {
             Container(
               width: double.infinity, //double.infinity,
               height: double.infinity, //double.infinity,
-              color: Colors.yellow,
+              color: Colors.white,
               child: CustomPaint(painter: FaceOutlinePainter(_offsets)),
             ),
             Center(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    'You have pushed the button this many times:',
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      CustomPaint(painter: WheelPainter()),
+                      CustomPaint(painter: WheelPainter())
+                    ],
                   ),
-                  Text(
-                    '$_counter',
-                    style: Theme.of(context).textTheme.headline4,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      CustomPaint(painter: WheelPainter()),
+                      CustomPaint(painter: WheelPainter())
+                    ],
                   ),
+                  // Text(
+                  //   'You have pushed the button this many times:',
+                  // ),
+                  // Text(
+                  //   '$_counter',
+                  //   style: Theme.of(context).textTheme.headline4,
+                  // ),
                 ],
               ),
             )
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: _incrementCounter,
+      //   tooltip: 'Increment',
+      //   child: Icon(Icons.add),
+      // ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
@@ -192,4 +208,49 @@ class FaceOutlinePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(FaceOutlinePainter oldDelegate) => true;
+}
+
+class WheelPainter extends CustomPainter {
+  Path getWheelPath(double wheelSize, double fromRadius, double toRadius) {
+    return new Path()
+      ..moveTo(wheelSize, wheelSize)
+      ..arcTo(
+          Rect.fromCircle(
+              radius: wheelSize, center: Offset(wheelSize, wheelSize)),
+          fromRadius,
+          toRadius,
+          false)
+      ..close();
+  }
+
+  Paint getColoredPaint(Color color) {
+    Paint paint = Paint();
+    paint.color = color;
+    return paint;
+  }
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    double wheelSize = 20;
+    double nbElem = 6;
+    double radius = (2 * pi) / nbElem;
+
+    canvas.drawPath(
+        getWheelPath(wheelSize, 0, radius), getColoredPaint(Colors.red));
+    canvas.drawPath(getWheelPath(wheelSize, radius, radius),
+        getColoredPaint(Colors.purple));
+    canvas.drawPath(getWheelPath(wheelSize, radius * 2, radius),
+        getColoredPaint(Colors.blue));
+    canvas.drawPath(getWheelPath(wheelSize, radius * 3, radius),
+        getColoredPaint(Colors.green));
+    canvas.drawPath(getWheelPath(wheelSize, radius * 4, radius),
+        getColoredPaint(Colors.yellow));
+    canvas.drawPath(getWheelPath(wheelSize, radius * 5, radius),
+        getColoredPaint(Colors.orange));
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return oldDelegate != this;
+  }
 }
