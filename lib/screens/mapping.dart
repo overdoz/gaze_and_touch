@@ -72,6 +72,9 @@ class _MyHomePageState extends State<MyHomePage> {
     });
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Mapping'),
+      ),
       body: Center(
         child: Stack(
           children: <Widget>[

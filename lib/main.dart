@@ -54,7 +54,15 @@ class HomeScreen extends StatelessWidget {
                     MaterialPageRoute(builder: (context) => Notifications()),
                   );
                 },
-                child: Text("Notifications"))
+                child: Text("Notifications")),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => MyHomePage()),
+                  );
+                },
+                child: Text("Mapping")),
           ],
         ),
       ),
