@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gazeAndTouch/screens/drawerScreen.dart';
 import './screens/notifications.dart';
 import './screens/mapping.dart';
+import './screens/buttons.dart';
 
 void main() {
   runApp(MyApp());
@@ -59,6 +60,14 @@ class HomeScreen extends StatelessWidget {
                   );
                 },
                 child: Text("Drawer")),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ButtonsScreen()),
+                  );
+                },
+                child: Text("Buttons")),
           ],
         ),
       ),
