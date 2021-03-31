@@ -17,7 +17,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  // add initial gaze points hidden at (0,0)
+  // add 10 initial gaze points hidden at (0,0)
   final _offsets = <Offset>[for (var i = 0; i < 10; i++) Offset(0, 0)];
   GlobalKey _key = GlobalKey();
 
