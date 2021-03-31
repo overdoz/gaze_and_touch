@@ -5,15 +5,19 @@ import 'dart:core';
 import 'dart:convert';
 import '../models/screenDetails.dart';
 
+typedef void VoidCallback();
+
 class GazeReceiver {
-  var addressesIListenFrom = InternetAddress.anyIPv4;
+  final VoidCallback callback;
+
+  final InternetAddress addressesIListenFrom = InternetAddress.anyIPv4;
   final int portIListenOn = 65002;
 
-  GazeReceiver(List<Offset> gazeData, ScreenSize size) {
-    _init(gazeData, size);
+  GazeReceiver(List<Offset> gazeData, ScreenSize size, this.callback) {
+    _init(gazeData, size, this.callback);
   }
 
-  _init(List<Offset> gazeData, ScreenSize size) {
+  _init(List<Offset> gazeData, ScreenSize size, Function callback) {
     RawDatagramSocket.bind(addressesIListenFrom, portIListenOn)
         .then((RawDatagramSocket udpSocket) {
       udpSocket.forEach((RawSocketEvent event) {
@@ -37,14 +41,21 @@ class GazeReceiver {
           var x = double.parse(xDecode);
           var y = double.parse(yDecode);
 
+          print("x: $x, y: $y");
+
           /// remove outliers and add gazepoint to array
           /// setState() ensures rerendering
           if (x != 0.0) {
             gazeData.add(Offset(x * size.width, y * size.height));
             gazeData.removeAt(0);
+            callback;
           }
         }
       });
     });
   }
+
+  void trigger(
+    widgetDetails,
+  ) {}
 }
