@@ -48,7 +48,7 @@ class GazeReceiver {
           if (x != 0.0) {
             gazeData.add(Offset(x * size.width, y * size.height));
             gazeData.removeAt(0);
-            callback;
+            callback();
           }
         }
       });

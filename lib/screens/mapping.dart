@@ -34,15 +34,15 @@ class _MyHomePageState extends State<MyHomePage> {
     double height = MediaQuery.of(context).size.height;
     var size = ScreenSize(height, width);
 
-    final RenderBox renderBoxRed = _key.currentContext.findRenderObject();
-    final sizeRed = renderBoxRed.size;
-    Offset position =
-        renderBoxRed.localToGlobal(Offset.zero); //this is global position
-    double y = position.dy;
+    // final RenderBox renderBoxRed = _key.currentContext.findRenderObject();
+    // final sizeRed = renderBoxRed.size;
+    // Offset position =
+    //     renderBoxRed.localToGlobal(Offset.zero); //this is global position
+    // // double y = position.dy;
 
-    var details = ScreenData(height, width, position);
+    // var details = ScreenData(height, width, position);
 
-    var gazeController = new GazeReceiver(_offsets, size, callback);
+    var _ = new GazeReceiver(_offsets, size, callback);
 
     return Scaffold(
       appBar: AppBar(
