@@ -28,18 +28,21 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
   Offset backButtonPosition;
   Size backButtonSize;
 
-  var button1Position;
-  var button1Size;
+  Offset button1Position;
+  Size button1Size;
 
   @override
   void initState() {
     super.initState();
+
+    // determine backbutton size and position at rendering
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       backButtonPosition = getWidgetPosition(backButtonKey);
       backButtonSize = getWidgetSize(backButtonKey);
       print(getWidgetPosition(backButtonKey));
     });
 
+    // determine button 1 size and position at rendering
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       button1Position = getWidgetPosition(key1);
       button1Size = getWidgetSize(key1);
@@ -114,10 +117,8 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
                                   minimumSize: MaterialStateProperty.all(Size(180.0, 80.0))
                                 ),
                                 onPressed: () {
-                                  var position = getWidgetPosition(key1);
-                                  var size = getWidgetSize(key1);
-                                  print(position);
-                                  print(size);
+                                  print(button1Size);
+                                  print(button1Position);
                                 },
                               ),
                               ElevatedButton(
