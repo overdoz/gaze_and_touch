@@ -21,7 +21,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   callback() {
     setState(() {
-      print("Callback works!");
+
+      print(DateTime.now());
     });
   }
 

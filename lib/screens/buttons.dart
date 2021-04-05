@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gazeAndTouch/utils/widgetDetails.dart';
+import '../shapes/painters.dart';
+import '../models/screenDetails.dart';
+import '../utils/gazeReceiver.dart';
+
 
 
 class ButtonsScreen extends StatefulWidget {
@@ -17,8 +21,15 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
   final GlobalKey key3 = GlobalKey();
   final GlobalKey backButtonKey = GlobalKey();
 
-  var backButtonPosition;
-  var backButtonSize;
+  // Initial offsets with 10 gazepoints
+  final _offsets = <Offset>[for (var i = 0; i < 10; i++) Offset(100, 200)];
+
+
+  Offset backButtonPosition;
+  Size backButtonSize;
+
+  var button1Position;
+  var button1Size;
 
   @override
   void initState() {
@@ -28,51 +39,112 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
       backButtonSize = getWidgetSize(backButtonKey);
       print(getWidgetPosition(backButtonKey));
     });
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      button1Position = getWidgetPosition(key1);
+      button1Size = getWidgetSize(key1);
+      print("Backbutton Position: ${getWidgetPosition(key1)}");
+    });
+  }
+
+  callback() {
+    setState(() {
+      if (isWithinWidget(_offsets[0], backButtonPosition, backButtonSize)) {
+        Navigator.of(context).pop();
+      }
+    });
+
+    // TODO: calculate the mean of the latest 10 gaze points
   }
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => false,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Buttons'),
-          leading: IconButton(
-            key: backButtonKey,
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              print(getWidgetPosition(backButtonKey));
-              print(getWidgetSize(backButtonKey));
-              Navigator.of(context).pop();
-            },
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+
+    var size = ScreenSize(height, width);
+
+    var _ = new GazeReceiver(_offsets, size, callback);
+
+
+    return Container(
+      color: Colors.white,
+      child: SafeArea(
+        child: WillPopScope(
+          onWillPop: () async => false,
+          child: Stack(
+            children: [
+
+              Scaffold(
+                body: Stack(
+                  children: [
+                    Container(
+                      width: double.infinity, //double.infinity,
+                      height: double.infinity, //double.infinity,
+                      color: Colors.white,
+                      child: CustomPaint(painter: FaceOutlinePainter(_offsets)),
+                    ),
+                    Center(
+                        child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.all(16.0),
+                              child: ElevatedButton(
+                                key: backButtonKey,
+                                child: Icon(Icons.arrow_back),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              )
+                            )
+                          ],
+                        ),
+                        Flexible(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              ElevatedButton(
+                                child: Text('Press me'),
+                                key: key1,
+                                style: ButtonStyle(
+                                  minimumSize: MaterialStateProperty.all(Size(180.0, 80.0))
+                                ),
+                                onPressed: () {
+                                  var position = getWidgetPosition(key1);
+                                  var size = getWidgetSize(key1);
+                                  print(position);
+                                  print(size);
+                                },
+                              ),
+                              ElevatedButton(
+                                child: Text('Press me'),
+                                key: key2,
+                                style: ButtonStyle(
+                                    minimumSize: MaterialStateProperty.all(Size(120.0, 60.0))
+                                ),
+                                onPressed: () {},
+                              ),
+                              ElevatedButton(
+                                child: Text('Press me'),
+                                key: key3,
+                                onPressed: () {},
+                              )
+                            ],
+                          ),
+                        )
+
+                      ],
+                    )),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
-        body: Center(
-            child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              child: Text('Open route'),
-              key: key1,
-              onPressed: () {
-                var position = getWidgetPosition(key1);
-                var size = getWidgetSize(key1);
-                print(position);
-                print(size);
-              },
-            ),
-            ElevatedButton(
-              child: Text('Open route'),
-              key: key2,
-              onPressed: () {},
-            ),
-            ElevatedButton(
-              child: Text('Open route'),
-              key: key3,
-              onPressed: () {},
-            ),
-          ],
-        )),
       ),
     );
   }
