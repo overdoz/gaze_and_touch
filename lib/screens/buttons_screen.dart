@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:gazeAndTouch/utils/widgetDetails.dart';
+import 'package:gazeAndTouch/utils/widget_details.dart';
 import '../shapes/painters.dart';
-import '../models/screenDetails.dart';
-import '../utils/gazeReceiver.dart';
+import '../models/screens_model.dart';
+import '../utils/gaze_listener.dart';
 
 
 
@@ -24,6 +24,8 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
   // Initial offsets with 10 gazepoints
   final _offsets = <Offset>[for (var i = 0; i < 10; i++) Offset(100, 200)];
 
+
+  GazeReceiver gazeListener;
 
   Offset backButtonPosition;
   Size backButtonSize;
@@ -48,6 +50,10 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
       button1Size = getWidgetSize(key1);
       print("Backbutton Position: ${getWidgetPosition(key1)}");
     });
+
+    /// initialize gaze listener 
+    gazeListener = new GazeReceiver(_offsets, callback);
+
   }
 
   callback() {
@@ -62,13 +68,11 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
 
-    var size = ScreenSize(height, width);
-
-    var _ = new GazeReceiver(_offsets, size, callback);
-
+    final ScreenSize size = ScreenSize(height, width);
 
     return Container(
       color: Colors.white,
@@ -77,7 +81,6 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
           onWillPop: () async => false,
           child: Stack(
             children: [
-
               Scaffold(
                 body: Stack(
                   children: [
@@ -132,14 +135,12 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
                             ],
                           ),
                         )
-
                       ],
                     )),
                     Container(
-                      width: double.infinity, //double.infinity,
-                      height: double.infinity, //double.infinity,
-                      //color: Colors.transparent,
-                      child: CustomPaint(painter: FaceOutlinePainter(_offsets)),
+                      width: double.infinity,
+                      height: double.infinity,
+                      child: CustomPaint(painter: FaceOutlinePainter(_offsets, size)),
                     ),
                   ],
                 ),

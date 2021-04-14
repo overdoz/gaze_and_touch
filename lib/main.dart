@@ -1,10 +1,11 @@
 import 'dart:core';
 // import 'package:udp/udp.dart';
 import 'package:flutter/material.dart';
-import 'package:gazeAndTouch/screens/drawerScreen.dart';
-import './screens/notifications.dart';
-import './screens/mapping.dart';
-import './screens/buttons.dart';
+import 'package:gazeAndTouch/screens/drawer_screen.dart';
+import './screens/notifications_screen.dart';
+import './screens/mapping_screen.dart';
+import './screens/buttons_screen.dart';
+import 'constants.dart';
 
 void main() {
   runApp(MyApp());

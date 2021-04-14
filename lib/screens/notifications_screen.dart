@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gazeAndTouch/models/screens_model.dart';
 import '../shapes/painters.dart';
 
 class Notifications extends StatefulWidget {
@@ -19,6 +20,12 @@ class _NotificationsState extends State<Notifications> {
 
   @override
   Widget build(BuildContext context) {
+
+    /// Screen height and width
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    var size = ScreenSize(height, width);
+
     return Container(
       color: Colors.white,
       child: SafeArea(
@@ -30,10 +37,10 @@ class _NotificationsState extends State<Notifications> {
                 body: Stack(
                   children: [
                     Container(
-                      width: double.infinity, //double.infinity,
-                      height: double.infinity, //double.infinity,
+                      width: double.infinity,
+                      height: double.infinity,
                       color: Colors.white,
-                      child: CustomPaint(painter: FaceOutlinePainter(_offsets)),
+                      child: CustomPaint(painter: FaceOutlinePainter(_offsets, size)),
                     ),
                     Center(
                         child: Column(

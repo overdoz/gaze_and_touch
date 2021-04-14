@@ -4,11 +4,13 @@ import 'dart:core';
 import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:gazeAndTouch/models/screens_model.dart';
 
 class FaceOutlinePainter extends CustomPainter {
-  final offsets;
+  final List<Offset> offsets;
+  final ScreenSize screen;
 
-  FaceOutlinePainter(this.offsets) : super();
+  FaceOutlinePainter(this.offsets, this.screen) : super();
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -20,7 +22,8 @@ class FaceOutlinePainter extends CustomPainter {
 
     // iterate through all gazepoints
     for (var offset in offsets) {
-      canvas.drawPoints(PointMode.points, [offset], paint);
+      var screenPoint = Offset(offset.dx * screen.width, offset.dy * screen.height);
+      canvas.drawPoints(PointMode.points, [screenPoint], paint);
     }
   }
 
