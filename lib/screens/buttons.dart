@@ -81,12 +81,7 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
               Scaffold(
                 body: Stack(
                   children: [
-                    Container(
-                      width: double.infinity, //double.infinity,
-                      height: double.infinity, //double.infinity,
-                      color: Colors.white,
-                      child: CustomPaint(painter: FaceOutlinePainter(_offsets)),
-                    ),
+
                     Center(
                         child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -140,6 +135,12 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
 
                       ],
                     )),
+                    Container(
+                      width: double.infinity, //double.infinity,
+                      height: double.infinity, //double.infinity,
+                      //color: Colors.transparent,
+                      child: CustomPaint(painter: FaceOutlinePainter(_offsets)),
+                    ),
                   ],
                 ),
               ),
