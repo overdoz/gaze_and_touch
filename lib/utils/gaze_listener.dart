@@ -54,6 +54,7 @@ class GazeReceiver {
 
           }
         }
+        // udpSocket.close();
       });
     });
   }
