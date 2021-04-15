@@ -20,6 +20,7 @@ class NotificationsBannerState extends State<NotificationsBanner> with TickerPro
   Animation<double> animation;
 
   double xPosBanner = -200.0;
+  double widgetHeight = 90;
   bool isUp = true;
 
 
@@ -30,7 +31,7 @@ class NotificationsBannerState extends State<NotificationsBanner> with TickerPro
     animation = Tween<double>(begin: -300, end: 0).animate(controller)
       ..addListener(() {
         setState(() {
-
+          ///
         });
       });
 
@@ -38,18 +39,24 @@ class NotificationsBannerState extends State<NotificationsBanner> with TickerPro
 
   void moveDown() {
     controller.forward();
-
     isUp = false;
   }
 
   void moveUp() {
     controller.reverse();
-
     isUp = true;
   }
 
   void expand() {
+    setState(() {
+      widgetHeight = 250;
+    });
+  }
 
+  void shrink() {
+    setState(() {
+      widgetHeight = 90;
+    });
   }
   
   
@@ -76,7 +83,7 @@ class NotificationsBannerState extends State<NotificationsBanner> with TickerPro
       offset: Offset(0.0, animation.value),
       child: AnimatedContainer(
         duration: Duration(milliseconds: 900),
-        height: 90,
+        height: widgetHeight,
         width: widget.widthNotification,
         color: Colors.grey,
         child: Padding(

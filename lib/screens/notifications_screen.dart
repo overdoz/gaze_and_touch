@@ -93,16 +93,31 @@ class _NotificationsState extends State<Notifications> {
                                     );
                                   },
                                 ),
+
                                 ElevatedButton(
                                   child: Text("Drop it"),
                                   onPressed: () {
                                     setState(
                                           () {
-                                            if (bannerKey.currentState.isUp) {
-                                              bannerKey.currentState.moveDown();
-                                            } else {
-                                              bannerKey.currentState.moveUp();
-                                            }
+                                        if (bannerKey.currentState.isUp) {
+                                          bannerKey.currentState.moveDown();
+                                        } else {
+                                          bannerKey.currentState.moveUp();
+                                        }
+                                      },
+                                    );
+                                  },
+                                ),
+                                ElevatedButton(
+                                  child: Text("Increase"),
+                                  onPressed: () {
+                                    setState(
+                                          () {
+                                        if (bannerKey.currentState.widgetHeight == 90) {
+                                          bannerKey.currentState.expand();
+                                        } else {
+                                          bannerKey.currentState.shrink();
+                                        }
                                       },
                                     );
                                   },
