@@ -43,38 +43,28 @@ class _NotificationsState extends State<Notifications> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Stack(
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.all(16.0),
-                                    child: ElevatedButton(
-                                      style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.green)),
-                                      key: backButtonKey,
-                                      child: Icon(Icons.arrow_back),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                  ),
-                                  Text("Plantygram"),
-                                ],
+                              Padding(
+                                padding: EdgeInsets.all(16.0),
+                                child: ElevatedButton(
+                                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.green)),
+                                  key: backButtonKey,
+                                  child: Icon(Icons.arrow_back),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
                               ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  NotificationsBanner(heightNotification, widthNotification, key: bannerKey),
-                                  // Text("Hallo"),
-                                ],
-                              ),
+                              Text("Plantygram"),
                             ],
                           ),
                           Flexible(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
+
                                 ElevatedButton(
                                   child: heightNotification != 300
                                       ? Text('Expand')
@@ -128,6 +118,17 @@ class _NotificationsState extends State<Notifications> {
                         ],
                       ),
                     ),
+
+                    /// Notifications banner on second level of stack
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        NotificationsBanner(heightNotification, widthNotification, key: bannerKey),
+                        // Text("Hallo"),
+                      ],
+                    ),
+
+                    /// Visualization of gaze points on top level of stack
                     IgnorePointer(
                       ignoring: true,
                       child: Container(
@@ -137,6 +138,7 @@ class _NotificationsState extends State<Notifications> {
                             painter: FaceOutlinePainter(_offsets, size)),
                       ),
                     ),
+
                   ],
                 ),
               ),
