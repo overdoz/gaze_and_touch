@@ -3,6 +3,7 @@ import 'package:gazeAndTouch/models/screens_model.dart';
 import 'package:gazeAndTouch/widgets/notifications.dart';
 import '../shapes/painters.dart';
 import '../widgets/notifications.dart';
+import '../widgets/feed.dart';
 
 class Notifications extends StatefulWidget {
   Notifications({Key key, this.title}) : super(key: key);
@@ -60,57 +61,71 @@ class _NotificationsState extends State<Notifications> {
                               Text("Plantygram"),
                             ],
                           ),
-                          Flexible(
+                          Expanded(
                             child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-
-                                ElevatedButton(
-                                  child: heightNotification != 300
-                                      ? Text('Expand')
-                                      : Text('Close'),
-                                  onPressed: () {
-                                    setState(
-                                      () {
-                                        if (heightNotification == 40) {
-                                          heightNotification = 300;
-                                          widthNotification = 400;
-                                        } else {
-                                          heightNotification = 40;
-                                          widthNotification = 100;
-                                        }
-                                      },
-                                    );
-                                  },
+                                Expanded(
+                                  child: ListView.builder(
+                                    shrinkWrap: true,
+                                    itemCount: 5,
+                                    itemBuilder: (BuildContext context, int index) {
+                                      return PostCard();
+                                    },
+                                  ),
                                 ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: [
+                                    ElevatedButton(
+                                      child: heightNotification != 300
+                                          ? Text('Expand')
+                                          : Text('Close'),
+                                      onPressed: () {
+                                        setState(
+                                          () {
+                                            if (heightNotification == 40) {
+                                              heightNotification = 300;
+                                              widthNotification = 400;
+                                            } else {
+                                              heightNotification = 40;
+                                              widthNotification = 100;
+                                            }
+                                          },
+                                        );
+                                      },
+                                    ),
 
-                                ElevatedButton(
-                                  child: Text("Drop it"),
-                                  onPressed: () {
-                                    setState(
-                                          () {
-                                        if (bannerKey.currentState.isUp) {
-                                          bannerKey.currentState.moveDown();
-                                        } else {
-                                          bannerKey.currentState.moveUp();
-                                        }
+                                    ElevatedButton(
+                                      child: Text("Drop it"),
+                                      onPressed: () {
+                                        setState(
+                                              () {
+                                            if (bannerKey.currentState.isUp) {
+                                              bannerKey.currentState.moveDown();
+                                            } else {
+                                              bannerKey.currentState.moveUp();
+                                            }
+                                          },
+                                        );
                                       },
-                                    );
-                                  },
-                                ),
-                                ElevatedButton(
-                                  child: Text("Increase"),
-                                  onPressed: () {
-                                    setState(
-                                          () {
-                                        if (bannerKey.currentState.widgetHeight == 90) {
-                                          bannerKey.currentState.expand();
-                                        } else {
-                                          bannerKey.currentState.shrink();
-                                        }
+                                    ),
+                                    ElevatedButton(
+                                      child: Text("Increase"),
+                                      onPressed: () {
+                                        setState(
+                                              () {
+                                            if (bannerKey.currentState.widgetHeight == 90) {
+                                              bannerKey.currentState.expand();
+                                            } else {
+                                              bannerKey.currentState.shrink();
+                                            }
+                                          },
+                                        );
                                       },
-                                    );
-                                  },
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
@@ -149,4 +164,6 @@ class _NotificationsState extends State<Notifications> {
     );
   }
 }
+
+
 
