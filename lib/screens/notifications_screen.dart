@@ -16,7 +16,8 @@ class Notifications extends StatefulWidget {
 
 class _NotificationsState extends State<Notifications> {
   final GlobalKey backButtonKey = GlobalKey();
-  final GlobalKey<NotificationsBannerState> bannerKey = GlobalKey<NotificationsBannerState>();
+  final GlobalKey<NotificationsBannerState> bannerKey =
+      GlobalKey<NotificationsBannerState>();
   final _offsets = <Offset>[for (var i = 0; i < 10; i++) Offset(100, 200)];
 
   double heightNotification = 40;
@@ -24,7 +25,6 @@ class _NotificationsState extends State<Notifications> {
 
   @override
   Widget build(BuildContext context) {
-
     /// Screen height and width
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
@@ -47,18 +47,22 @@ class _NotificationsState extends State<Notifications> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Padding(
-                                padding: EdgeInsets.all(16.0),
-                                child: ElevatedButton(
-                                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.green)),
-                                  key: backButtonKey,
-                                  child: Icon(Icons.arrow_back),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
+                              FlatButton(
+                                key: backButtonKey,
+                                child: Icon(Icons.auto_awesome),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
                               ),
-                              Text("Plantygram"),
+                              Text(
+                                "Instaplants",
+                                style: TextStyle(fontFamily: "Insta", fontSize: 25),
+                              ),
+                              Spacer(),
+                              Icon(Icons.live_tv),
+                              SizedBox(width: 10,),
+                              Icon(Icons.send_outlined),
+                              SizedBox(width: 10,)
                             ],
                           ),
                           Expanded(
@@ -70,13 +74,15 @@ class _NotificationsState extends State<Notifications> {
                                   child: ListView.builder(
                                     shrinkWrap: true,
                                     itemCount: 5,
-                                    itemBuilder: (BuildContext context, int index) {
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
                                       return PostCard();
                                     },
                                   ),
                                 ),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
                                   children: [
                                     ElevatedButton(
                                       child: heightNotification != 300
@@ -96,12 +102,11 @@ class _NotificationsState extends State<Notifications> {
                                         );
                                       },
                                     ),
-
                                     ElevatedButton(
                                       child: Text("Drop it"),
                                       onPressed: () {
                                         setState(
-                                              () {
+                                          () {
                                             if (bannerKey.currentState.isUp) {
                                               bannerKey.currentState.moveDown();
                                             } else {
@@ -115,8 +120,10 @@ class _NotificationsState extends State<Notifications> {
                                       child: Text("Increase"),
                                       onPressed: () {
                                         setState(
-                                              () {
-                                            if (bannerKey.currentState.widgetHeight == 90) {
+                                          () {
+                                            if (bannerKey.currentState
+                                                    .widgetHeight ==
+                                                90) {
                                               bannerKey.currentState.expand();
                                             } else {
                                               bannerKey.currentState.shrink();
@@ -138,7 +145,9 @@ class _NotificationsState extends State<Notifications> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        NotificationsBanner(heightNotification, widthNotification, key: bannerKey),
+                        NotificationsBanner(
+                            heightNotification, widthNotification,
+                            key: bannerKey),
                         // Text("Hallo"),
                       ],
                     ),
@@ -153,7 +162,6 @@ class _NotificationsState extends State<Notifications> {
                             painter: FaceOutlinePainter(_offsets, size)),
                       ),
                     ),
-
                   ],
                 ),
               ),
@@ -164,6 +172,3 @@ class _NotificationsState extends State<Notifications> {
     );
   }
 }
-
-
-

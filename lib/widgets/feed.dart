@@ -46,7 +46,8 @@ class PostCard extends StatelessWidget {
             children: [
               _Post(),
               _PostImage(),
-              _PostDetails()
+              _PostDetails(),
+              _Likes(),
             ],
         ),
       ),
@@ -107,6 +108,40 @@ class _PostImage extends StatelessWidget {
           ),
         ),
     );
+
+  }
+}
+
+class _Likes extends StatelessWidget {
+  const _Likes({Key key}) : super(key: key);
+
+  final name = "the_real_elon_musk";
+  final count = 3;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(children: [
+      Text("Liked by ",
+        style: TextStyle(
+        color: Colors.black.withOpacity(0.8),
+        ),
+      ),
+      Text(name, style: TextStyle(
+        fontWeight: FontWeight.bold,
+        color: Colors.black,
+      ),
+      ),
+      Text(" and ",
+        style: TextStyle(
+          color: Colors.black.withOpacity(0.8),
+        ),
+      ),
+      Text("$count others", style: TextStyle(
+        fontWeight: FontWeight.bold,
+        color: Colors.black,
+      ),
+      ),
+    ],);
 
   }
 }
