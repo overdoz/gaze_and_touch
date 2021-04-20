@@ -38,15 +38,15 @@ class PostCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
-      aspectRatio: 5 / 6,
+      aspectRatio: 5 / 7,
       child: Card(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _Post(),
               _PostImage(),
-              // _PostDetails()
+              _PostDetails()
             ],
         ),
       ),
@@ -119,7 +119,28 @@ class _PostDetails extends StatelessWidget {
     return Row(
       children: [
        // _UserImage(),
-        _UserNameAndEmail()
+       // _UserNameAndEmail()
+        SizedBox(width: 10,),
+        Icon(
+          Icons.favorite_border,
+          color: Colors.grey,
+          size: 24.0,
+          semanticLabel: 'Text to announce in accessibility modes',
+        ),
+        SizedBox(width: 10,),
+        Icon(
+          Icons.chat_bubble_outline,
+          color: Colors.grey,
+          size: 24.0,
+          semanticLabel: 'Text to announce in accessibility modes',
+        ),
+        SizedBox(width: 10,),
+        Icon(
+          Icons.send_outlined,
+          color: Colors.grey,
+          size: 24.0,
+          semanticLabel: 'Text to announce in accessibility modes',
+        ),
       ],
     );
   }

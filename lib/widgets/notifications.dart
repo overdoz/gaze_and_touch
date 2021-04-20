@@ -70,12 +70,7 @@ class NotificationsBannerState extends State<NotificationsBanner> with TickerPro
   void slide() {
 
   }
-
-  // void _incrementCounter() {
-  //   setState(() {
-  //     _counter++;
-  //   });
-  // }
+  
 
   @override
   Widget build(BuildContext context) {
