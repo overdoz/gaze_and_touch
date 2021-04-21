@@ -1,39 +1,9 @@
 import 'package:flutter/material.dart';
-
-class FeedPostModel {
-  final int id;
-  final String imgURL;
-  final String user;
-  final String location;
-
-  FeedPostModel(this.id, this.imgURL, this.user, this.location);
-}
-
-// StatelessWidget with UI for our ItemModel-s in ListView.
-class FeedPost extends StatelessWidget {
-  const FeedPost(this.model, this.onItemTap, {Key key}) : super(key: key);
-
-  final FeedPostModel model;
-  final Function onItemTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      // Enables taps for child and add ripple effect when child widget is long pressed.
-      onTap: onItemTap,
-      child: ListTile(
-        // Useful standard widget for displaying something in ListView.
-        leading: Image.network(model.imgURL),
-        title: Text(model.user),
-      ),
-    );
-  }
-}
-
-/// ------------------------------------------------------------------
+import 'package:gazeAndTouch/models/post_model.dart';
 
 class PostCard extends StatelessWidget {
-  const PostCard({Key key}) : super(key: key);
+  final FeedPostModel model;
+  const PostCard(this.model, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -42,13 +12,13 @@ class PostCard extends StatelessWidget {
       child: Card(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _Post(),
-              _PostImage(),
-              _PostDetails(),
-              _Likes(),
-            ],
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _Post(this.model),
+            _PostImage(model.imgURL),
+            _PostDetails(),
+            _Likes(model.favLike, model.likes),
+          ],
         ),
       ),
     );
@@ -56,96 +26,112 @@ class PostCard extends StatelessWidget {
 }
 
 class _Post extends StatelessWidget {
-  const _Post({Key key}) : super(key: key);
+  final FeedPostModel model;
+  const _Post(this.model, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        _UserImage(),
-        _PostTitleAndSummary(),
+        _UserImage(model.userURL),
+        _PostNameAndLocation(model.username, model.location),
       ],
     );
   }
 }
 
-class _PostTitleAndSummary extends StatelessWidget {
-  const _PostTitleAndSummary({Key key}) : super(key: key);
+/// Username and Location of this post
+class _PostNameAndLocation extends StatelessWidget {
+  final String username;
+  final String location;
+  const _PostNameAndLocation(this.username, this.location, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final TextStyle titleTheme = Theme.of(context).textTheme.title;
     final TextStyle summaryTheme = Theme.of(context).textTheme.body1;
-    final String title = "Thanh";
-    final String summary = "Paris";
+
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: titleTheme),
-        Text(summary, style: summaryTheme),
+        Text(this.username, style: titleTheme),
+        Text(this.location, style: summaryTheme),
       ],
     );
   }
 }
 
+/// Posted image with squared aspect ratio
 class _PostImage extends StatelessWidget {
-  const _PostImage({Key key}) : super(key: key);
+  final String imgURL;
+  const _PostImage(this.imgURL, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
-          aspectRatio: 1,
-        child: Container(
-          decoration: BoxDecoration(
+      aspectRatio: 1,
+      child: Container(
+        decoration: BoxDecoration(
             image: DecorationImage(
-              fit: BoxFit.cover,
-              alignment: FractionalOffset.topCenter,
-              image: NetworkImage("https://images.ctfassets.net/05aprp0cc8ji/U1JPvQ7NLxjruxcoxBXqn/f5c6dcd5585cdd83389e07b7f5be98a6/DER1317867.jpg?w=305&h=230&fit=fill&fm=jpg&fl=progressive"),
-            )
-          ),
-        ),
+          fit: BoxFit.cover,
+          alignment: FractionalOffset.topCenter,
+          image: AssetImage(
+              this.imgURL),
+        )),
+      ),
     );
-
   }
 }
 
+/// determines how many likes this post received
+/// [name] shows the leading username of people which liked this post
+/// [count] displays the amount of remaining likes
 class _Likes extends StatelessWidget {
-  const _Likes({Key key}) : super(key: key);
+  final String name;
+  final int count;
 
-  final name = "the_real_elon_musk";
-  final count = 3;
+  const _Likes(this.name, this.count, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Row(children: [
-      Text("Liked by ",
-        style: TextStyle(
-        color: Colors.black.withOpacity(0.8),
+    return Row(
+      children: [
+        Text(
+          "Liked by ",
+          style: TextStyle(
+            color: Colors.black.withOpacity(0.8),
+          ),
         ),
-      ),
-      Text(name, style: TextStyle(
-        fontWeight: FontWeight.bold,
-        color: Colors.black,
-      ),
-      ),
-      Text(" and ",
-        style: TextStyle(
-          color: Colors.black.withOpacity(0.8),
+        Text(
+          name,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
         ),
-      ),
-      Text("$count others", style: TextStyle(
-        fontWeight: FontWeight.bold,
-        color: Colors.black,
-      ),
-      ),
-    ],);
-
+        Text(
+          " and ",
+          style: TextStyle(
+            color: Colors.black.withOpacity(0.8),
+          ),
+        ),
+        Text(
+          "$count others",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
+      ],
+    );
   }
 }
 
+/// interaction options for each post
+/// there are 3 icons without any functionality right now
 class _PostDetails extends StatelessWidget {
   const _PostDetails({Key key}) : super(key: key);
 
@@ -153,23 +139,29 @@ class _PostDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-       // _UserImage(),
-       // _UserNameAndEmail()
-        SizedBox(width: 10,),
+        // _UserImage(),
+        // _UserNameAndEmail()
+        SizedBox(
+          width: 10,
+        ),
         Icon(
           Icons.favorite_border,
           color: Colors.grey,
           size: 24.0,
           semanticLabel: 'Text to announce in accessibility modes',
         ),
-        SizedBox(width: 10,),
+        SizedBox(
+          width: 10,
+        ),
         Icon(
           Icons.chat_bubble_outline,
           color: Colors.grey,
           size: 24.0,
           semanticLabel: 'Text to announce in accessibility modes',
         ),
-        SizedBox(width: 10,),
+        SizedBox(
+          width: 10,
+        ),
         Icon(
           Icons.send_outlined,
           color: Colors.grey,
@@ -181,27 +173,10 @@ class _PostDetails extends StatelessWidget {
   }
 }
 
-class _UserNameAndEmail extends StatelessWidget {
-  const _UserNameAndEmail({Key key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      flex: 7,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text("username"),
-          Text("email"),
-        ],
-      ),
-    );
-  }
-}
-
+/// avatar of user in the upper left corner
 class _UserImage extends StatelessWidget {
-  const _UserImage({Key key}) : super(key: key);
+  final String userURL;
+  const _UserImage(this.userURL, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -209,7 +184,8 @@ class _UserImage extends StatelessWidget {
       padding: const EdgeInsets.all(6.0),
       child: CircleAvatar(
         radius: 30,
-        backgroundImage: NetworkImage("https://img.fotocommunity.com/thanh-le-104b1c57-f139-4ac0-9ca1-a8433d4c8d2f.jpg?width=200&height=200"),
+        backgroundImage: AssetImage(
+            this.userURL),
         backgroundColor: Colors.transparent,
       ),
     );

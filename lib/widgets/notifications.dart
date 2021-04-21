@@ -67,6 +67,8 @@ class NotificationsBannerState extends State<NotificationsBanner>
 
   @override
   Widget build(BuildContext context) {
+    print("init banner");
+
     return Transform.translate(
       offset: Offset(0.0, animation.value),
       child: AnimatedContainer(
