@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -67,26 +69,29 @@ class NotificationsBannerState extends State<NotificationsBanner>
 
   @override
   Widget build(BuildContext context) {
-    print("init banner");
-
     return Transform.translate(
       offset: Offset(0.0, animation.value),
       child: AnimatedContainer(
           decoration: BoxDecoration(
-              color: Colors.grey.withOpacity(0.9),
+              color: Colors.grey.shade200.withOpacity(0.5),
               borderRadius: BorderRadius.all(Radius.circular(10))),
           duration: Duration(milliseconds: 900),
           height: widgetHeight,
           width: widget.widthNotification,
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _Messenger(),
-                _NameAndMessage(),
-              ],
+          child: ClipRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _Messenger(),
+                    _NameAndMessage(),
+                  ],
+                ),
+              ),
             ),
           )),
     );
