@@ -21,7 +21,7 @@ class _NotificationsState extends State<Notifications> {
       GlobalKey<NotificationsBannerState>();
   final _offsets = <Offset>[for (var i = 0; i < 10; i++) Offset(100, 200)];
 
-  double heightNotification = 40;
+  double heightNotification = 50;
   double widthNotification = 400;
 
   @override
@@ -156,7 +156,7 @@ class _NotificationsState extends State<Notifications> {
                                       () {
                                     if (bannerKey.currentState
                                         .widgetHeight ==
-                                        90) {
+                                        100) {
                                       bannerKey.currentState.expand();
                                     } else {
                                       bannerKey.currentState.shrink();

@@ -15,20 +15,23 @@ class NotificationsBanner extends StatefulWidget {
   NotificationsBannerState createState() => NotificationsBannerState();
 }
 
-class NotificationsBannerState extends State<NotificationsBanner>
-    with TickerProviderStateMixin {
+class NotificationsBannerState extends State<NotificationsBanner> with TickerProviderStateMixin {
   AnimationController controller;
   Animation<double> animation;
 
+  final GlobalKey<_DescriptionTextWidgetState> textKey = GlobalKey<_DescriptionTextWidgetState>();
+
+  final message =
+      "Hey Thanh, wanna work for me? Would love to have you in my AI research team. We could maybe meet for a cup of coffee?!";
+
   double xPosBanner = -200.0;
-  double widgetHeight = 90;
+  double widgetHeight = 100;
   bool isUp = true;
 
   @override
   void initState() {
     super.initState();
-    controller =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 800));
+    controller = AnimationController(vsync: this, duration: Duration(milliseconds: 800));
     animation = Tween<double>(begin: -300, end: 0).animate(controller)
       ..addListener(() {
         setState(() {
@@ -49,13 +52,20 @@ class NotificationsBannerState extends State<NotificationsBanner>
 
   void expand() {
     setState(() {
-      widgetHeight = 250;
+      widgetHeight = 140;
+      Future.delayed(const Duration(milliseconds: 500), () {
+        textKey.currentState.showMore();
+      });
+
     });
   }
 
   void shrink() {
     setState(() {
-      widgetHeight = 90;
+      widgetHeight = 100;
+      Future.delayed(const Duration(milliseconds: 100), () {
+        textKey.currentState.showLess();
+      });
     });
   }
 
@@ -71,29 +81,30 @@ class NotificationsBannerState extends State<NotificationsBanner>
   Widget build(BuildContext context) {
     return Transform.translate(
       offset: Offset(0.0, animation.value),
-      child: AnimatedContainer(
-          decoration: BoxDecoration(
-              color: Colors.grey.shade200.withOpacity(0.5),
-              borderRadius: BorderRadius.all(Radius.circular(10))),
-          duration: Duration(milliseconds: 900),
-          height: widgetHeight,
-          width: widget.widthNotification,
-          child: ClipRect(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+      child: ClipRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: AnimatedContainer(
+              decoration: BoxDecoration(
+                  color: Colors.grey.shade200.withOpacity(0.8),
+                  borderRadius: BorderRadius.all(Radius.circular(10))),
+              duration: Duration(milliseconds: 400),
+              height: widgetHeight,
+              width: widget.widthNotification,
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _Messenger(),
                     _NameAndMessage(),
+                    DescriptionTextWidget(key: textKey, text: message),
                   ],
                 ),
-              ),
-            ),
-          )),
+              )),
+        ),
+      ),
     );
   }
 }
@@ -139,8 +150,80 @@ class _NameAndMessage extends StatelessWidget {
           "Elon Musk",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        Text("Wanna work for me? <3"),
+        // Text("Wanna work for me? <3"),
       ],
+    );
+  }
+}
+
+class DescriptionTextWidget extends StatefulWidget {
+  final String text;
+
+  DescriptionTextWidget({Key key, this.text}) : super(key: key);
+
+  @override
+  _DescriptionTextWidgetState createState() =>
+      new _DescriptionTextWidgetState();
+}
+
+class _DescriptionTextWidgetState extends State<DescriptionTextWidget> {
+  String firstHalf;
+  String secondHalf;
+
+  bool flag = true;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.text.length > 50) {
+      firstHalf = widget.text.substring(0, 50);
+      secondHalf = widget.text.substring(50, widget.text.length);
+    } else {
+      firstHalf = widget.text;
+      secondHalf = "";
+    }
+  }
+
+  void showMore() {
+    setState(() {
+      flag = false;
+    });
+  }
+
+  void showLess() {
+    setState(() {
+      flag = true;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new Container(
+      child: secondHalf.isEmpty
+          ? Text(firstHalf)
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(flag ? (firstHalf + "...") : (firstHalf + secondHalf)),
+                InkWell(
+                  child: new Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      new Text(
+                        flag ? "show more" : "show less",
+                        style: new TextStyle(color: Colors.blue),
+                      ),
+                    ],
+                  ),
+                  onTap: () {
+                    setState(() {
+                      flag = !flag;
+                    });
+                  },
+                ),
+              ],
+            ),
     );
   }
 }

@@ -36,6 +36,8 @@ class _Post extends StatelessWidget {
       children: [
         _UserImage(model.userURL),
         _PostNameAndLocation(model.username, model.location),
+        Spacer(),
+        Icon(Icons.more_vert),
       ],
     );
   }
@@ -183,7 +185,7 @@ class _UserImage extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(6.0),
       child: CircleAvatar(
-        radius: 30,
+        radius: 20,
         backgroundImage: AssetImage(
             this.userURL),
         backgroundColor: Colors.transparent,
