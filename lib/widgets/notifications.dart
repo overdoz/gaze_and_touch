@@ -81,29 +81,57 @@ class NotificationsBannerState extends State<NotificationsBanner> with TickerPro
   Widget build(BuildContext context) {
     return Transform.translate(
       offset: Offset(0.0, animation.value),
-      child: ClipRect(
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: AnimatedContainer(
-              decoration: BoxDecoration(
-                  color: Colors.grey.shade200.withOpacity(0.8),
-                  borderRadius: BorderRadius.all(Radius.circular(10))),
-              duration: Duration(milliseconds: 400),
-              height: widgetHeight,
-              width: widget.widthNotification,
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _Messenger(),
-                    _NameAndMessage(),
-                    DescriptionTextWidget(key: textKey, text: message),
-                  ],
+      child: Stack(
+        children: [
+          ClipRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+              child: AnimatedContainer(
+                  decoration: BoxDecoration(
+                      color: Colors.grey.shade200.withOpacity(0.8),
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  duration: Duration(milliseconds: 400),
+                  height: widgetHeight,
+                  width: widget.widthNotification,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _Messenger(),
+                        _NameAndMessage(),
+                        DescriptionTextWidget(key: textKey, text: message),
+                      ],
+                    ),
+                  )),
+            ),
+          ),
+          Positioned(
+            left: -5.0,
+            top: -5.0,
+            child: GestureDetector(
+              onTap: (){
+                moveUp();
+              },
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                    boxShadow: [BoxShadow(blurRadius: 5, color: Colors.black.withOpacity(0.3), spreadRadius: 2)],
+                  ),
+                  child: CircleAvatar(
+                    radius: 14.0,
+                    backgroundColor: Colors.white,
+                    child: Icon(Icons.close, color: Colors.black),
+                  ),
                 ),
-              )),
-        ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
