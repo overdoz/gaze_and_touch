@@ -26,7 +26,8 @@ class _NotificationsState extends State<Notifications> {
   GazeReceiver _gazeInput;
 
   /// position and size of UI element
-  RenderBox _widget;
+  Size _notificationSize;
+  Offset _notificationPos;
 
   /// initial gaze data
   final _offsets = <Offset>[for (var i = 0; i < 10; i++) Offset(100, 200)];
@@ -39,17 +40,19 @@ class _NotificationsState extends State<Notifications> {
     super.initState();
     _gazeInput = new GazeReceiver(_offsets, callback);
 
-    /// init information about notifications banner
-    _widget = getWidget(bannerKey);
   }
 
   callback() {
     setState(
       () {
         // print(DateTime.now());
-        if (isWithinWidget(_offsets[0], _widget)) {
-          bannerKey.currentState.expand();
-        }
+        // if (isWithinWidget(_offsets[0], _widget)) {
+        //   bannerKey.currentState.expand();
+        // }
+        /// init information about notifications banner
+        final RenderBox banner = bannerKey.currentContext.findRenderObject();
+        _notificationSize = banner.size;
+        _notificationPos = banner.localToGlobal(Offset.zero);
       },
     );
   }
