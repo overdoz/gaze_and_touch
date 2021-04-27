@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gazeAndTouch/models/screens_model.dart';
+import 'package:gazeAndTouch/utils/gaze_listener.dart';
 import 'package:gazeAndTouch/widgets/notifications.dart';
 import '../shapes/painters.dart';
 import '../widgets/notifications.dart';
@@ -16,13 +17,41 @@ class Notifications extends StatefulWidget {
 }
 
 class _NotificationsState extends State<Notifications> {
+
+  /// keys
   final GlobalKey backButtonKey = GlobalKey();
-  final GlobalKey<NotificationsBannerState> bannerKey =
-      GlobalKey<NotificationsBannerState>();
+  final GlobalKey<NotificationsBannerState> bannerKey = GlobalKey<NotificationsBannerState>();
+
+  /// eye tracking listener
+  GazeReceiver _gazeInput;
+
+  /// position and size of UI element
+  Size notificationSize;
+  Offset notificationPos;
+
+  /// initial gaze data
   final _offsets = <Offset>[for (var i = 0; i < 10; i++) Offset(100, 200)];
 
   double heightNotification = 50;
   double widthNotification = 400;
+
+  @override
+  void initState() {
+    super.initState();
+    _gazeInput = new GazeReceiver(_offsets, callback);
+
+    /// init information about notifications banner
+    final RenderBox banner = bannerKey.currentContext.findRenderObject();
+    notificationSize = banner.size;
+    notificationPos = banner.localToGlobal(Offset.zero);
+  }
+
+  callback() {
+    setState(() {
+      print(DateTime.now());
+    });
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,9 +90,13 @@ class _NotificationsState extends State<Notifications> {
                               ),
                               Spacer(),
                               Icon(Icons.live_tv),
-                              SizedBox(width: 10,),
+                              SizedBox(
+                                width: 10,
+                              ),
                               Icon(Icons.send_outlined),
-                              SizedBox(width: 10,)
+                              SizedBox(
+                                width: 10,
+                              )
                             ],
                           ),
                           Expanded(
@@ -80,7 +113,6 @@ class _NotificationsState extends State<Notifications> {
                                     },
                                   ),
                                 ),
-
                               ],
                             ),
                           ),
@@ -92,9 +124,7 @@ class _NotificationsState extends State<Notifications> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        NotificationsBanner(
-                            heightNotification, widthNotification,
-                            key: bannerKey),
+                        NotificationsBanner(heightNotification, widthNotification, key: bannerKey),
                       ],
                     ),
 
@@ -104,8 +134,7 @@ class _NotificationsState extends State<Notifications> {
                       child: Container(
                         width: double.infinity,
                         height: double.infinity,
-                        child: CustomPaint(
-                            painter: FaceOutlinePainter(_offsets, size)),
+                        child: CustomPaint(painter: FaceOutlinePainter(_offsets, size)),
                       ),
                     ),
 
@@ -114,16 +143,13 @@ class _NotificationsState extends State<Notifications> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceAround,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             ElevatedButton(
-                              child: heightNotification != 300
-                                  ? Text('Expand')
-                                  : Text('Close'),
+                              child: heightNotification != 300 ? Text('Expand') : Text('Close'),
                               onPressed: () {
                                 setState(
-                                      () {
+                                  () {
                                     if (heightNotification == 40) {
                                       heightNotification = 300;
                                       widthNotification = 400;
@@ -139,7 +165,7 @@ class _NotificationsState extends State<Notifications> {
                               child: Text("Drop it"),
                               onPressed: () {
                                 setState(
-                                      () {
+                                  () {
                                     if (bannerKey.currentState.isUp) {
                                       bannerKey.currentState.moveDown();
                                     } else {
@@ -153,10 +179,8 @@ class _NotificationsState extends State<Notifications> {
                               child: Text("Increase"),
                               onPressed: () {
                                 setState(
-                                      () {
-                                    if (bannerKey.currentState
-                                        .widgetHeight ==
-                                        100) {
+                                  () {
+                                    if (bannerKey.currentState.widgetHeight == 100) {
                                       bannerKey.currentState.expand();
                                     } else {
                                       bannerKey.currentState.shrink();

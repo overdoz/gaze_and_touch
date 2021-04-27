@@ -19,7 +19,7 @@ class NotificationsBannerState extends State<NotificationsBanner> with TickerPro
   AnimationController controller;
   Animation<double> animation;
 
-  final GlobalKey<_DescriptionTextWidgetState> textKey = GlobalKey<_DescriptionTextWidgetState>();
+  final GlobalKey<_DescriptionTextState> textKey = GlobalKey<_DescriptionTextState>();
 
   final message =
       "Hey Thanh, wanna work for me? Would love to have you in my AI research team. We could maybe meet for a cup of coffee?!";
@@ -100,8 +100,8 @@ class NotificationsBannerState extends State<NotificationsBanner> with TickerPro
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _Messenger(),
-                        _NameAndMessage(),
-                        DescriptionTextWidget(key: textKey, text: message),
+                        _Name(),
+                        _DescriptionText(key: textKey, text: message),
                       ],
                     ),
                   )),
@@ -165,8 +165,8 @@ class _Messenger extends StatelessWidget {
   }
 }
 
-class _NameAndMessage extends StatelessWidget {
-  const _NameAndMessage({Key key}) : super(key: key);
+class _Name extends StatelessWidget {
+  const _Name({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -184,17 +184,17 @@ class _NameAndMessage extends StatelessWidget {
   }
 }
 
-class DescriptionTextWidget extends StatefulWidget {
+class _DescriptionText extends StatefulWidget {
   final String text;
 
-  DescriptionTextWidget({Key key, this.text}) : super(key: key);
+  _DescriptionText({Key key, this.text}) : super(key: key);
 
   @override
-  _DescriptionTextWidgetState createState() =>
-      new _DescriptionTextWidgetState();
+  _DescriptionTextState createState() =>
+      new _DescriptionTextState();
 }
 
-class _DescriptionTextWidgetState extends State<DescriptionTextWidget> {
+class _DescriptionTextState extends State<_DescriptionText> {
   String firstHalf;
   String secondHalf;
 
