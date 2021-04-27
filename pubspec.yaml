@@ -49,6 +49,12 @@ flutter:
     - lib/assets/images/plant1.jpeg
     - lib/assets/images/plant2.jpeg
     - lib/assets/images/plant3.jpeg
+    - lib/assets/images/plant4.jpeg
+    - lib/assets/images/plant5.jpeg
+    - lib/assets/images/plant6.jpeg
+    - lib/assets/images/plant7.jpeg
+    - lib/assets/images/plant8.jpeg
+    - lib/assets/images/plant9.jpeg
     - lib/assets/images/annalena.jpeg
     - lib/assets/images/sepp.jpeg
 

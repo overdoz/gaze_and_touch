@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gazeAndTouch/constants.dart';
 
 class NotificationsBanner extends StatefulWidget {
   final double heightNotification;
@@ -25,7 +26,7 @@ class NotificationsBannerState extends State<NotificationsBanner> with TickerPro
       "Hey Thanh, wanna work for me? Would love to have you in my AI research team. We could maybe meet for a cup of coffee?!";
 
   double xPosBanner = -200.0;
-  double widgetHeight = 100;
+  double widgetHeight = bannerHeightMin;
   bool isUp = true;
 
   @override
@@ -52,7 +53,7 @@ class NotificationsBannerState extends State<NotificationsBanner> with TickerPro
 
   void expand() {
     setState(() {
-      widgetHeight = 140;
+      widgetHeight = bannerHeightMax;
       Future.delayed(const Duration(milliseconds: 500), () {
         textKey.currentState.showMore();
       });
@@ -62,7 +63,7 @@ class NotificationsBannerState extends State<NotificationsBanner> with TickerPro
 
   void shrink() {
     setState(() {
-      widgetHeight = 100;
+      widgetHeight = bannerHeightMin;
       Future.delayed(const Duration(milliseconds: 100), () {
         textKey.currentState.showLess();
       });
@@ -104,7 +105,8 @@ class NotificationsBannerState extends State<NotificationsBanner> with TickerPro
                         _DescriptionText(key: textKey, text: message),
                       ],
                     ),
-                  )),
+                  ),
+              ),
             ),
           ),
           Positioned(
@@ -174,9 +176,12 @@ class _Name extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          "Elon Musk",
-          style: TextStyle(fontWeight: FontWeight.bold),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 0),
+          child: Text(
+            "Elon Musk",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
         ),
         // Text("Wanna work for me? <3"),
       ],

@@ -3,6 +3,7 @@ import 'package:gazeAndTouch/models/screens_model.dart';
 import 'package:gazeAndTouch/utils/gaze_listener.dart';
 import 'package:gazeAndTouch/utils/widget_details.dart';
 import 'package:gazeAndTouch/widgets/notifications.dart';
+import 'package:gazeAndTouch/constants.dart';
 import '../shapes/painters.dart';
 import '../widgets/notifications.dart';
 import '../widgets/feed.dart';
@@ -32,7 +33,7 @@ class _NotificationsState extends State<Notifications> {
   /// initial gaze data
   final _offsets = <Offset>[for (var i = 0; i < 10; i++) Offset(100, 200)];
 
-  double heightNotification = 50;
+  double heightNotification = 52;
   double widthNotification = 400;
 
   @override
@@ -67,6 +68,7 @@ class _NotificationsState extends State<Notifications> {
     return Container(
       color: Colors.white,
       child: SafeArea(
+        bottom: false,
         child: WillPopScope(
           onWillPop: () async => false,
           child: Stack(
@@ -150,22 +152,6 @@ class _NotificationsState extends State<Notifications> {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             ElevatedButton(
-                              child: heightNotification != 300 ? Text('Expand') : Text('Close'),
-                              onPressed: () {
-                                setState(
-                                  () {
-                                    if (heightNotification == 40) {
-                                      heightNotification = 300;
-                                      widthNotification = 400;
-                                    } else {
-                                      heightNotification = 40;
-                                      widthNotification = 100;
-                                    }
-                                  },
-                                );
-                              },
-                            ),
-                            ElevatedButton(
                               child: Text("Drop it"),
                               onPressed: () {
                                 setState(
@@ -184,7 +170,7 @@ class _NotificationsState extends State<Notifications> {
                               onPressed: () {
                                 setState(
                                   () {
-                                    if (bannerKey.currentState.widgetHeight == 100) {
+                                    if (bannerKey.currentState.widgetHeight == bannerHeightMin) {
                                       bannerKey.currentState.expand();
                                     } else {
                                       bannerKey.currentState.shrink();
