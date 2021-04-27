@@ -27,28 +27,21 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
 
   GazeReceiver gazeListener;
 
-  Offset backButtonPosition;
-  Size backButtonSize;
-
-  Offset button1Position;
-  Size button1Size;
+  RenderBox backButton;
+  RenderBox testButton;
 
   @override
   void initState() {
     super.initState();
 
-    // determine backbutton size and position at rendering
+    /// determine backbutton size and position at rendering
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      backButtonPosition = getWidgetPosition(backButtonKey);
-      backButtonSize = getWidgetSize(backButtonKey);
-      print(getWidgetPosition(backButtonKey));
+      backButton = getWidget(backButtonKey);
     });
 
-    // determine button 1 size and position at rendering
+    /// determine button 1 size and position at rendering
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      button1Position = getWidgetPosition(key1);
-      button1Size = getWidgetSize(key1);
-      print("Backbutton Position: ${getWidgetPosition(key1)}");
+      testButton = getWidget(key1);
     });
 
     /// initialize gaze listener 
@@ -58,7 +51,7 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
 
   callback() {
     setState(() {
-      if (isWithinWidget(_offsets[0], backButtonPosition, backButtonSize)) {
+      if (isWithinWidget(_offsets[0], backButton)) {
         Navigator.of(context).pop();
       }
     });
@@ -115,8 +108,8 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
                                   minimumSize: MaterialStateProperty.all(Size(180.0, 80.0))
                                 ),
                                 onPressed: () {
-                                  print(button1Size);
-                                  print(button1Position);
+                                  print(getWidgetPosition(backButtonKey));
+                                  print(getWidgetSize(backButtonKey));
                                 },
                               ),
                               ElevatedButton(

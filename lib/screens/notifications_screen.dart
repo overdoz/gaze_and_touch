@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gazeAndTouch/models/screens_model.dart';
 import 'package:gazeAndTouch/utils/gaze_listener.dart';
+import 'package:gazeAndTouch/utils/widget_details.dart';
 import 'package:gazeAndTouch/widgets/notifications.dart';
 import '../shapes/painters.dart';
 import '../widgets/notifications.dart';
@@ -17,7 +18,6 @@ class Notifications extends StatefulWidget {
 }
 
 class _NotificationsState extends State<Notifications> {
-
   /// keys
   final GlobalKey backButtonKey = GlobalKey();
   final GlobalKey<NotificationsBannerState> bannerKey = GlobalKey<NotificationsBannerState>();
@@ -26,8 +26,7 @@ class _NotificationsState extends State<Notifications> {
   GazeReceiver _gazeInput;
 
   /// position and size of UI element
-  Size notificationSize;
-  Offset notificationPos;
+  RenderBox _widget;
 
   /// initial gaze data
   final _offsets = <Offset>[for (var i = 0; i < 10; i++) Offset(100, 200)];
@@ -41,16 +40,18 @@ class _NotificationsState extends State<Notifications> {
     _gazeInput = new GazeReceiver(_offsets, callback);
 
     /// init information about notifications banner
-    final RenderBox banner = bannerKey.currentContext.findRenderObject();
-    notificationSize = banner.size;
-    notificationPos = banner.localToGlobal(Offset.zero);
+    _widget = getWidget(bannerKey);
   }
 
   callback() {
-    setState(() {
-      print(DateTime.now());
-    });
-
+    setState(
+      () {
+        // print(DateTime.now());
+        if (isWithinWidget(_offsets[0], _widget)) {
+          bannerKey.currentState.expand();
+        }
+      },
+    );
   }
 
   @override
