@@ -26,9 +26,9 @@ class _NotificationsState extends State<Notifications> {
   /// eye tracking listener
   GazeReceiver _gazeInput;
 
-  /// position and size of UI element
-  Size _notificationSize;
-  Offset _notificationPos;
+  RenderBox _banner;
+
+  ScreenSize _size = new ScreenSize(0, 0);
 
   /// initial gaze data
   final _offsets = <Offset>[for (var i = 0; i < 10; i++) Offset(100, 200)];
@@ -39,6 +39,12 @@ class _NotificationsState extends State<Notifications> {
   @override
   void initState() {
     super.initState();
+
+    /// determine banner size and position at rendering
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _banner = getWidget(bannerKey);
+    });
+
     _gazeInput = new GazeReceiver(_offsets, callback);
 
   }
@@ -47,13 +53,18 @@ class _NotificationsState extends State<Notifications> {
     setState(
       () {
         // print(DateTime.now());
-        // if (isWithinWidget(_offsets[0], _widget)) {
-        //   bannerKey.currentState.expand();
-        // }
-        /// init information about notifications banner
-        final RenderBox banner = bannerKey.currentContext.findRenderObject();
-        _notificationSize = banner.size;
-        _notificationPos = banner.localToGlobal(Offset.zero);
+        Offset first = _offsets[0];
+
+        Offset temp = new Offset(first.dx * _size.width, first.dy * _size.height);
+
+
+        // var isWithin = isWithinWidget(_offsets[0], _banner);
+
+        // print("Size: $_notificationSize | Position: $_notificationPos | Gaze: ${_offsets[0]} | True: $isWithin");
+
+        if (isWithinWidget(temp, _banner)) {
+          bannerKey.currentState.expand();
+        }
       },
     );
   }
@@ -63,7 +74,8 @@ class _NotificationsState extends State<Notifications> {
     /// Screen height and width
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    final ScreenSize size = ScreenSize(height, width);
+    //final ScreenSize size = ScreenSize(height, width);
+    _size = ScreenSize(height, width);
 
     return Container(
       color: Colors.white,
@@ -140,7 +152,7 @@ class _NotificationsState extends State<Notifications> {
                       child: Container(
                         width: double.infinity,
                         height: double.infinity,
-                        child: CustomPaint(painter: FaceOutlinePainter(_offsets, size)),
+                        child: CustomPaint(painter: FaceOutlinePainter(_offsets, _size)),
                       ),
                     ),
 
