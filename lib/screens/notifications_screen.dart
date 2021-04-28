@@ -26,8 +26,10 @@ class _NotificationsState extends State<Notifications> {
   /// eye tracking listener
   GazeReceiver _gazeInput;
 
+  /// UI element
   RenderBox _banner;
 
+  /// initial screen size which will be overwritten during render
   ScreenSize _size = new ScreenSize(0, 0);
 
   /// initial gaze data
@@ -52,17 +54,10 @@ class _NotificationsState extends State<Notifications> {
   callback() {
     setState(
       () {
-        // print(DateTime.now());
         Offset first = _offsets[0];
+        Offset gazePoint = new Offset(first.dx * _size.width, first.dy * _size.height);
 
-        Offset temp = new Offset(first.dx * _size.width, first.dy * _size.height);
-
-
-        // var isWithin = isWithinWidget(_offsets[0], _banner);
-
-        // print("Size: $_notificationSize | Position: $_notificationPos | Gaze: ${_offsets[0]} | True: $isWithin");
-
-        if (isWithinWidget(temp, _banner)) {
+        if (isWithinWidget(gazePoint, _banner)) {
           bannerKey.currentState.expand();
         }
       },
@@ -74,7 +69,7 @@ class _NotificationsState extends State<Notifications> {
     /// Screen height and width
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    //final ScreenSize size = ScreenSize(height, width);
+
     _size = ScreenSize(height, width);
 
     return Container(

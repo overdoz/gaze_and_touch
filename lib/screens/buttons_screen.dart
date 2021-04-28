@@ -77,7 +77,6 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
               Scaffold(
                 body: Stack(
                   children: [
-
                     Center(
                         child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -93,8 +92,8 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                              )
-                            )
+                              ),
+                            ),
                           ],
                         ),
                         Flexible(
@@ -135,7 +134,6 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
                         height: double.infinity,
                         child: CustomPaint(painter: FaceOutlinePainter(_offsets, size)),
                       ),
-
                   ],
                 ),
               ),

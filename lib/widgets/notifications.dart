@@ -8,9 +8,7 @@ class NotificationsBanner extends StatefulWidget {
   final double heightNotification;
   final double widthNotification;
 
-  NotificationsBanner(this.heightNotification, this.widthNotification,
-      {Key key})
-      : super(key: key);
+  NotificationsBanner(this.heightNotification, this.widthNotification, {Key key}) : super(key: key);
 
   @override
   NotificationsBannerState createState() => NotificationsBannerState();
@@ -22,8 +20,7 @@ class NotificationsBannerState extends State<NotificationsBanner> with TickerPro
 
   final GlobalKey<_DescriptionTextState> textKey = GlobalKey<_DescriptionTextState>();
 
-  final message =
-      "Hey Thanh, wanna work for me? Would love to have you in my AI research team. We could maybe meet for a cup of coffee?!";
+  final message = "Hey Thanh, wanna work for me? Would love to have you in my AI research team. We could maybe meet for a cup of coffee?!";
 
   double xPosBanner = -200.0;
   double widgetHeight = bannerHeightMin;
@@ -57,7 +54,6 @@ class NotificationsBannerState extends State<NotificationsBanner> with TickerPro
       Future.delayed(const Duration(milliseconds: 500), () {
         textKey.currentState.showMore();
       });
-
     });
   }
 
@@ -88,24 +84,22 @@ class NotificationsBannerState extends State<NotificationsBanner> with TickerPro
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
               child: AnimatedContainer(
-                  decoration: BoxDecoration(
-                      color: Colors.grey.shade200.withOpacity(0.8),
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                  duration: Duration(milliseconds: 400),
-                  height: widgetHeight,
-                  width: widget.widthNotification,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _Messenger(),
-                        _Name(),
-                        _DescriptionText(key: textKey, text: message),
-                      ],
-                    ),
+                decoration: BoxDecoration(color: Colors.grey.shade200.withOpacity(0.8), borderRadius: BorderRadius.all(Radius.circular(10))),
+                duration: Duration(milliseconds: 400),
+                height: widgetHeight,
+                width: widget.widthNotification,
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _Messenger(),
+                      _Name(),
+                      _DescriptionText(key: textKey, text: message),
+                    ],
                   ),
+                ),
               ),
             ),
           ),
@@ -113,7 +107,7 @@ class NotificationsBannerState extends State<NotificationsBanner> with TickerPro
             left: -5.0,
             top: -5.0,
             child: GestureDetector(
-              onTap: (){
+              onTap: () {
                 moveUp();
               },
               child: Align(
@@ -195,8 +189,7 @@ class _DescriptionText extends StatefulWidget {
   _DescriptionText({Key key, this.text}) : super(key: key);
 
   @override
-  _DescriptionTextState createState() =>
-      new _DescriptionTextState();
+  _DescriptionTextState createState() => new _DescriptionTextState();
 }
 
 class _DescriptionTextState extends State<_DescriptionText> {
@@ -250,9 +243,11 @@ class _DescriptionTextState extends State<_DescriptionText> {
                     ],
                   ),
                   onTap: () {
-                    setState(() {
-                      flag = !flag;
-                    });
+                    setState(
+                      () {
+                        flag = !flag;
+                      },
+                    );
                   },
                 ),
               ],
