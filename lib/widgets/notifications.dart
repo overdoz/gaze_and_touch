@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gazeAndTouch/constants.dart';
+import 'package:gazeAndTouch/utils/widget_details.dart';
 
 class NotificationsBanner extends StatefulWidget {
   final double heightNotification;
@@ -18,12 +19,18 @@ class NotificationsBannerState extends State<NotificationsBanner> with TickerPro
   AnimationController controller;
   Animation<double> animation;
 
+  /// Keys
+  final GlobalKey closeButtonKey = GlobalKey();
   final GlobalKey<_DescriptionTextState> textKey = GlobalKey<_DescriptionTextState>();
+
+  /// Close button
+  RenderBox closeButton;
 
   final message = "Hey Thanh, wanna work for me? Would love to have you in my AI research team. We could maybe meet for a cup of coffee?!";
 
   double xPosBanner = -200.0;
   double widgetHeight = bannerHeightMin;
+
   bool isUp = true;
 
   @override
@@ -36,6 +43,11 @@ class NotificationsBannerState extends State<NotificationsBanner> with TickerPro
           ///
         });
       });
+
+    /// determine banner size and position at rendering
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      closeButton = getWidget(closeButtonKey);
+    });
   }
 
   void moveDown() {
@@ -113,6 +125,7 @@ class NotificationsBannerState extends State<NotificationsBanner> with TickerPro
               child: Align(
                 alignment: Alignment.topLeft,
                 child: Container(
+                  key: closeButtonKey,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     shape: BoxShape.circle,

@@ -60,6 +60,10 @@ class _NotificationsState extends State<Notifications> {
         if (isWithinWidget(gazePoint, _banner)) {
           bannerKey.currentState.expand();
         }
+
+        if (isWithinWidget(gazePoint, bannerKey.currentState.closeButton)) {
+          bannerKey.currentState.moveUp();
+        }
       },
     );
   }
