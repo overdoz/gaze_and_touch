@@ -54,13 +54,16 @@ class _NotificationsState extends State<Notifications> {
   callback() {
     setState(
       () {
+        /// just consider the first gaze point of array
         Offset first = _offsets[0];
         Offset gazePoint = new Offset(first.dx * _size.width, first.dy * _size.height);
 
+        /// expand banner when gaze touches the UI element
         if (isWithinWidget(gazePoint, _banner)) {
           bannerKey.currentState.expand();
         }
 
+        /// move banner up when gaze touches the close button
         if (isWithinWidget(gazePoint, bannerKey.currentState.closeButton)) {
           bannerKey.currentState.moveUp();
         }
