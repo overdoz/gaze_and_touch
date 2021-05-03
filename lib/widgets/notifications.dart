@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
@@ -18,6 +19,7 @@ class NotificationsBanner extends StatefulWidget {
 class NotificationsBannerState extends State<NotificationsBanner> with TickerProviderStateMixin {
   AnimationController controller;
   Animation<double> animation;
+  Timer _timer;
 
   /// Keys
   final GlobalKey closeButtonKey = GlobalKey();
@@ -32,6 +34,14 @@ class NotificationsBannerState extends State<NotificationsBanner> with TickerPro
   double widgetHeight = bannerHeightMin;
 
   bool isUp = true;
+
+  NotificationsBannerState() {
+    _timer = new Timer(const Duration(milliseconds: 3000), () {
+      setState(() {
+        moveDown();
+      });
+    });
+  }
 
   @override
   void initState() {
