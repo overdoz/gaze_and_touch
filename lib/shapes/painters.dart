@@ -1,7 +1,5 @@
 import 'dart:ui';
-import 'dart:io';
 import 'dart:core';
-import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:gazeAndTouch/models/screens_model.dart';
@@ -15,15 +13,14 @@ class FaceOutlinePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // Define a paint object
+    /// Define a paint object
     final paint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 4.0
       ..color = Colors.indigo;
 
-    // iterate through all gazepoints
+    /// iterate through all gazepoints
     for (var offset in offsets) {
-      // var screenPoint = Offset(offset.dx * screen.width, offset.dy * screen.height);
       var screenPoint = Offset(mapNum(offset.dx, 0.375, 0.625, 0, screen.width), mapNum(offset.dy, 0.1, 0.9, 0, screen.height));
       canvas.drawPoints(PointMode.points, [screenPoint], paint);
     }

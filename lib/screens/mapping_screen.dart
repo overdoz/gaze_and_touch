@@ -19,12 +19,10 @@ class _MyHomePageState extends State<MyHomePage> {
   final _offsets = <Offset>[for (var i = 0; i < 10; i++) Offset(0, 0)];
   final GlobalKey _key = GlobalKey();
 
+  /// listens to incoming gaze data
   GazeReceiver _gazeInput;
 
-  @override
-  void initState() {
-    super.initState();
-
+  _MyHomePageState() {
     _gazeInput = new GazeReceiver(_offsets, callback);
   }
 

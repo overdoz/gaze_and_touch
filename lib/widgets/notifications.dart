@@ -7,10 +7,7 @@ import 'package:gazeAndTouch/constants.dart';
 import 'package:gazeAndTouch/utils/widget_details.dart';
 
 class NotificationsBanner extends StatefulWidget {
-  final double heightNotification;
-  final double widthNotification;
-
-  NotificationsBanner(this.heightNotification, this.widthNotification, {Key key}) : super(key: key);
+  NotificationsBanner({Key key}) : super(key: key);
 
   @override
   NotificationsBannerState createState() => NotificationsBannerState();
@@ -20,25 +17,23 @@ class NotificationsBannerState extends State<NotificationsBanner> with TickerPro
   AnimationController controller;
   Animation<double> animation;
   Timer _timer;
-
-  /// Keys
-  final GlobalKey closeButtonKey = GlobalKey();
-  final GlobalKey<_DescriptionTextState> textKey = GlobalKey<_DescriptionTextState>();
-
-  /// Close button
-  RenderBox closeButton;
-
-  final message = "Hey Thanh, wanna work for me? Would love to have you in my AI research team. We could maybe meet for a cup of coffee?!";
-
-  double xPosBanner = -200.0;
+  int lastGaze;
   double widgetHeight = bannerHeightMin;
-
+  double widgetWidth = 400;
   bool isUp = true;
 
+  /// Key for collapsible text
+  final GlobalKey<_DescriptionTextState> textKey = GlobalKey<_DescriptionTextState>();
+
+  /// Constructor
   NotificationsBannerState() {
-    _timer = new Timer(const Duration(milliseconds: 3000), () {
+    controller = AnimationController(vsync: this, duration: Duration(milliseconds: 800));
+
+    /// set time to moment when banner pops up
+    _timer = new Timer(const Duration(milliseconds: 4000), () {
       setState(() {
         moveDown();
+        lastGaze = DateTime.now().millisecondsSinceEpoch;
       });
     });
   }
@@ -46,23 +41,32 @@ class NotificationsBannerState extends State<NotificationsBanner> with TickerPro
   @override
   void initState() {
     super.initState();
-    controller = AnimationController(vsync: this, duration: Duration(milliseconds: 800));
     animation = Tween<double>(begin: -300, end: 0).animate(controller)
       ..addListener(() {
         setState(() {
           ///
         });
       });
+  }
 
-    /// determine banner size and position at rendering
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      closeButton = getWidget(closeButtonKey);
-    });
+  void setNewTime() {
+    lastGaze = DateTime.now().millisecondsSinceEpoch;
   }
 
   void moveDown() {
     controller.forward();
     isUp = false;
+
+    /// slide banner up again after a particular amount of time
+    _timer = new Timer(const Duration(milliseconds: 6000), () {
+      var timeStamp = DateTime.now().millisecondsSinceEpoch;
+
+      if (timeStamp >= lastGaze + 5000) {
+        setState(() {
+          moveUp();
+        });
+      }
+    });
   }
 
   void moveUp() {
@@ -94,7 +98,6 @@ class NotificationsBannerState extends State<NotificationsBanner> with TickerPro
     super.dispose();
   }
 
-  void slide() {}
 
   @override
   Widget build(BuildContext context) {
@@ -109,7 +112,7 @@ class NotificationsBannerState extends State<NotificationsBanner> with TickerPro
                 decoration: BoxDecoration(color: Colors.grey.shade200.withOpacity(0.8), borderRadius: BorderRadius.all(Radius.circular(10))),
                 duration: Duration(milliseconds: 400),
                 height: widgetHeight,
-                width: widget.widthNotification,
+                width: widgetWidth,
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Column(
@@ -120,31 +123,6 @@ class NotificationsBannerState extends State<NotificationsBanner> with TickerPro
                       _Name(),
                       _DescriptionText(key: textKey, text: message),
                     ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            left: -5.0,
-            top: -5.0,
-            child: GestureDetector(
-              onTap: () {
-                moveUp();
-              },
-              child: Align(
-                alignment: Alignment.topLeft,
-                child: Container(
-                  key: closeButtonKey,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                    boxShadow: [BoxShadow(blurRadius: 5, color: Colors.black.withOpacity(0.3), spreadRadius: 2)],
-                  ),
-                  child: CircleAvatar(
-                    radius: 14.0,
-                    backgroundColor: Colors.white,
-                    child: Icon(Icons.close, color: Colors.black),
                   ),
                 ),
               ),

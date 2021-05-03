@@ -35,8 +35,6 @@ class _NotificationsState extends State<Notifications> {
   /// initial gaze data
   final _offsets = <Offset>[for (var i = 0; i < 10; i++) Offset(100, 200)];
 
-  double heightNotification = 52;
-  double widthNotification = 400;
 
   @override
   void initState() {
@@ -54,6 +52,8 @@ class _NotificationsState extends State<Notifications> {
   callback() {
     setState(
       () {
+        var timeStamp = DateTime.now().millisecondsSinceEpoch;
+
         /// just consider the first gaze point of array
         Offset first = _offsets[0];
         Offset gazePoint = new Offset(first.dx * _size.width, first.dy * _size.height);
@@ -61,10 +61,11 @@ class _NotificationsState extends State<Notifications> {
         /// expand banner when gaze touches the UI element
         if (isWithinWidget(gazePoint, _banner)) {
           bannerKey.currentState.expand();
+          bannerKey.currentState.setNewTime();
         }
 
-        /// move banner up when gaze touches the close button
-        if (isWithinWidget(gazePoint, bannerKey.currentState.closeButton)) {
+        /// hide banner 3 seconds after you stop starring at it
+        if (timeStamp >= bannerKey.currentState.lastGaze + 3000) {
           bannerKey.currentState.moveUp();
         }
       },
@@ -144,7 +145,7 @@ class _NotificationsState extends State<Notifications> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        NotificationsBanner(heightNotification, widthNotification, key: bannerKey),
+                        NotificationsBanner(key: bannerKey),
                       ],
                     ),
 
