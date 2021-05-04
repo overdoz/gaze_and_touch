@@ -48,12 +48,12 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         child: Stack(
           children: <Widget>[
-            Container(
-              width: double.infinity, //double.infinity,
-              height: double.infinity, //double.infinity,
-              color: Colors.white,
-              child: CustomPaint(painter: FaceOutlinePainter(_offsets, size)),
-            ),
+            // Container(
+            //   width: double.infinity, //double.infinity,
+            //   height: double.infinity, //double.infinity,
+            //   color: Colors.white,
+            //   child: CustomPaint(painter: FaceOutlinePainter(_offsets, size)),
+            // ),
             Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,

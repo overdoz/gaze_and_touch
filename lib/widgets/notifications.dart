@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'dart:ui';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gazeAndTouch/constants.dart';
-import 'package:gazeAndTouch/utils/widget_details.dart';
 
 class NotificationsBanner extends StatefulWidget {
   NotificationsBanner({Key key}) : super(key: key);
@@ -141,12 +139,11 @@ class _Messenger extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
-      // crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(10),
           child: Image.network(
-            "https://thumbs.dreamstime.com/b/whatsapp-logo-voronezh-russland-januar-symbol-168935006.jpg",
+            logoWhatsApp,
             height: 25,
             width: 25,
           ),
@@ -178,7 +175,6 @@ class _Name extends StatelessWidget {
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
-        // Text("Wanna work for me? <3"),
       ],
     );
   }

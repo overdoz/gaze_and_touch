@@ -16,7 +16,7 @@ class GazeReceiver {
   }
 
   _init(List<Offset> gazeData, Function callback) {
-    RawDatagramSocket.bind(addressesIListenFrom, portIListenOn).then((RawDatagramSocket udpSocket) {
+    RawDatagramSocket.bind(addressesIListenFrom, portIListenOn, reusePort: true).then((RawDatagramSocket udpSocket) {
       udpSocket.forEach((RawSocketEvent event) {
         if (event == RawSocketEvent.read) {
           Datagram dg = udpSocket.receive();
@@ -50,6 +50,10 @@ class GazeReceiver {
             callback();
           }
         }
+        // udpSocket.drain().then((_) {
+        //   udpSocket.close();
+        // });
+
         // udpSocket.close();
       });
     });

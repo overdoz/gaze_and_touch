@@ -129,11 +129,11 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
                         )
                       ],
                     )),
-                    Container(
-                        width: double.infinity,
-                        height: double.infinity,
-                        child: CustomPaint(painter: FaceOutlinePainter(_offsets, size)),
-                      ),
+                    // Container(
+                    //     width: double.infinity,
+                    //     height: double.infinity,
+                    //     child: CustomPaint(painter: FaceOutlinePainter(_offsets, size)),
+                    //   ),
                   ],
                 ),
               ),

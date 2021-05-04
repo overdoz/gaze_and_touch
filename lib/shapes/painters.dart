@@ -8,11 +8,13 @@ import 'package:gazeAndTouch/utils/math.dart';
 class FaceOutlinePainter extends CustomPainter {
   final List<Offset> offsets;
   final ScreenSize screen;
+  final Map<String, double> dimensions;
 
-  FaceOutlinePainter(this.offsets, this.screen) : super();
+  FaceOutlinePainter(this.offsets, this.screen, this.dimensions) : super();
 
   @override
   void paint(Canvas canvas, Size size) {
+
     /// Define a paint object
     final paint = Paint()
       ..style = PaintingStyle.stroke
@@ -21,7 +23,7 @@ class FaceOutlinePainter extends CustomPainter {
 
     /// iterate through all gazepoints
     for (var offset in offsets) {
-      var screenPoint = Offset(mapNum(offset.dx, 0.375, 0.625, 0, screen.width), mapNum(offset.dy, 0.1, 0.9, 0, screen.height));
+      var screenPoint = Offset(mapNum(offset.dx, dimensions["inputA width"], dimensions["inputB width"], 0, screen.width), mapNum(offset.dy, dimensions["inputA height"], dimensions["inputB height"], 0, screen.height));
       canvas.drawPoints(PointMode.points, [screenPoint], paint);
     }
   }

@@ -9,3 +9,6 @@ const double bannerWidth = 400;
 
 /// Text
 const message = "Hey Thanh, wanna work for me? Would love to have you in my AI research team. We could maybe meet for a cup of coffee?!";
+
+/// Logos
+const logoWhatsApp = "https://thumbs.dreamstime.com/b/whatsapp-logo-voronezh-russland-januar-symbol-168935006.jpg";

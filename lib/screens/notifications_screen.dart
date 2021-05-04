@@ -10,18 +10,21 @@ import '../widgets/feed.dart';
 import '../data/feed_data.dart';
 
 class Notifications extends StatefulWidget {
-  Notifications({Key key, this.title}) : super(key: key);
+  Notifications({Key key, this.dimensions}) : super(key: key);
 
-  final String title;
+  final Map<String, double> dimensions;
 
   @override
-  _NotificationsState createState() => _NotificationsState();
+  _NotificationsState createState() => _NotificationsState(dimensions: this.dimensions);
 }
 
 class _NotificationsState extends State<Notifications> {
   /// keys
   final GlobalKey backButtonKey = GlobalKey();
   final GlobalKey<NotificationsBannerState> bannerKey = GlobalKey<NotificationsBannerState>();
+  Map<String, double> dimensions;
+
+  _NotificationsState({this.dimensions});
 
   /// eye tracking listener
   GazeReceiver _gazeInput;
@@ -46,7 +49,6 @@ class _NotificationsState extends State<Notifications> {
     });
 
     _gazeInput = new GazeReceiver(_offsets, callback);
-
   }
 
   callback() {
@@ -155,7 +157,7 @@ class _NotificationsState extends State<Notifications> {
                       child: Container(
                         width: double.infinity,
                         height: double.infinity,
-                        child: CustomPaint(painter: FaceOutlinePainter(_offsets, _size)),
+                        child: CustomPaint(painter: FaceOutlinePainter(_offsets, _size, dimensions)),
                       ),
                     ),
 

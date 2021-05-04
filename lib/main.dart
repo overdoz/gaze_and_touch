@@ -2,7 +2,12 @@ import 'dart:core';
 // import 'package:udp/udp.dart';
 import 'package:flutter/material.dart';
 import 'package:gazeAndTouch/screens/drawer_screen.dart';
+import 'package:gazeAndTouch/utils/gaze_listener.dart';
+import 'package:gazeAndTouch/utils/math.dart';
+import 'package:gazeAndTouch/utils/widget_details.dart';
+import 'package:gazeAndTouch/models/screens_model.dart';
 import './screens/notifications_screen.dart';
+import './shapes/painters.dart';
 import './screens/mapping_screen.dart';
 import './screens/buttons_screen.dart';
 import 'constants.dart';
@@ -29,46 +34,154 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  HomeScreen({Key key}) : super(key: key);
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+
+  double screenSize;
+  double aspectRatio;
+  double mobileScreenSize;
+  double mobileAspectRatio;
+
+  // Map dimensions;
+
+  /// eye tracking listener
+  GazeReceiver _gazeInput;
+
+  /// initial gaze data
+  final _offsets = <Offset>[for (var i = 0; i < 10; i++) Offset(100, 200)];
+
+  /// initial screen size which will be overwritten during render
+  ScreenSize _size = new ScreenSize(0, 0);
+
+  @override
+  void initState() {
+    super.initState();
+
+    // _gazeInput = new GazeReceiver(_offsets, callback);
+
+  }
+
+
+  callback() {
+    setState(
+          () {
+
+      },
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
+    /// Screen height and width
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+
+    _size = ScreenSize(height, width);
+
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+      body: Container(
+        child: Stack(
+          // mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Notifications()),
-                  );
-                },
-                child: Text("Notifications")),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => MyHomePage()),
-                  );
-                },
-                child: Text("Mapping")),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => DrawerScreen()),
-                  );
-                },
-                child: Text("Drawer")),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ButtonsScreen()),
-                  );
-                },
-                child: Text("Buttons")),
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(30.0),
+                    child: TextField(
+                      keyboardType: TextInputType.numberWithOptions(decimal: true),
+                      decoration: InputDecoration(
+                        hintText: "screen size in inch"
+                      ),
+                      onChanged: (text) {
+                        screenSize = double.parse(text);
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(30.0),
+                    child: TextField(
+                      keyboardType: TextInputType.numberWithOptions(decimal: true),
+                      decoration: InputDecoration(
+                          hintText: "aspect ratio"
+                      ),
+                      onChanged: (text) {
+                        aspectRatio = double.parse(text);
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(30.0),
+                    child: TextField(
+                      keyboardType: TextInputType.numberWithOptions(decimal: true),
+                      decoration: InputDecoration(
+                          hintText: "mobile screen size in inch"
+                      ),
+                      onChanged: (text) {
+                        mobileScreenSize = double.parse(text);
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(30.0),
+                    child: TextField(
+                      keyboardType: TextInputType.numberWithOptions(decimal: true),
+                      decoration: InputDecoration(
+                          hintText: "mobile aspect ratio"
+                      ),
+                      onChanged: (text) {
+                        mobileAspectRatio = double.parse(text);
+                      },
+                    ),
+                  ),
+                  ElevatedButton(
+                      onPressed: () {
+                        Map<String, double> dimensions = calcMeasurements(screenSize, aspectRatio, mobileScreenSize, mobileAspectRatio);
+
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Notifications(dimensions: dimensions)),
+                        );
+                      },
+                      child: Text("Let's start"),
+                  ),
+                ],
+              ),
+            ),
+
+            // ElevatedButton(
+            //     onPressed: () {
+            //       Navigator.push(
+            //         context,
+            //         MaterialPageRoute(builder: (context) => MyHomePage()),
+            //       );
+            //     },
+            //     child: Text("Mapping")),
+            // ElevatedButton(
+            //     onPressed: () {
+            //       Navigator.push(
+            //         context,
+            //         MaterialPageRoute(builder: (context) => DrawerScreen()),
+            //       );
+            //     },
+            //     child: Text("Drawer")),
+            // ElevatedButton(
+            //     onPressed: () {
+            //       Navigator.push(
+            //         context,
+            //         MaterialPageRoute(builder: (context) => ButtonsScreen()),
+            //       );
+            //     },
+            //     child: Text("Buttons")),
           ],
         ),
       ),
