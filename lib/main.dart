@@ -99,7 +99,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: TextField(
                       keyboardType: TextInputType.numberWithOptions(decimal: true),
                       decoration: InputDecoration(
-                        hintText: "screen size in inch"
+                        labelText: "screen size",
+                        hintText: "screen size in inch (e.g. 13\")"
                       ),
                       onChanged: (text) {
                         screenSize = double.parse(text);
@@ -111,7 +112,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: TextField(
                       keyboardType: TextInputType.numberWithOptions(decimal: true),
                       decoration: InputDecoration(
-                          hintText: "aspect ratio"
+                        labelText: "aspect ratio",
+                          hintText: "aspect ratio (e.g. 4:3 = 1.33)"
                       ),
                       onChanged: (text) {
                         aspectRatio = double.parse(text);
@@ -123,7 +125,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: TextField(
                       keyboardType: TextInputType.numberWithOptions(decimal: true),
                       decoration: InputDecoration(
-                          hintText: "mobile screen size in inch"
+                        labelText: "mobile screen size",
+                          hintText: "mobile screen size in inch (e.g. 6.5\")"
                       ),
                       onChanged: (text) {
                         mobileScreenSize = double.parse(text);
@@ -135,7 +138,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: TextField(
                       keyboardType: TextInputType.numberWithOptions(decimal: true),
                       decoration: InputDecoration(
-                          hintText: "mobile aspect ratio"
+                        labelText: "mobile aspect ratio",
+                          hintText: "mobile aspect ratio (e.g. 19.5:9 = 2.16)"
                       ),
                       onChanged: (text) {
                         mobileAspectRatio = double.parse(text);
@@ -144,7 +148,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   ElevatedButton(
                       onPressed: () {
-                        Map<String, double> dimensions = calcMeasurements(screenSize, aspectRatio, mobileScreenSize, mobileAspectRatio);
+                        // Map<String, double> dimensions = calcMeasurements(screenSize, aspectRatio, mobileScreenSize, mobileAspectRatio);
+                        Map<String, double> dimensions = calcMeasurements(12.3, 1.5, 6.5, 2.16);
 
 
                         Navigator.push(
