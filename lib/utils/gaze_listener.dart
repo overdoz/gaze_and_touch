@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'dart:ui';
 import 'dart:io';
 import 'dart:core';
@@ -26,20 +25,22 @@ class GazeReceiver {
 
           Map<String, dynamic> parsedGazeData;
 
-          double rightEyeX;
-          double rightEyeY;
-
           double leftEyeX;
           double leftEyeY;
+
+          double rightEyeX;
+          double rightEyeY;
 
           try {
             parsedGazeData = jsonDecode(coordinates);
 
-            rightEyeX = parsedGazeData["right_gaze_point_on_display_area"][0];
-            rightEyeY = parsedGazeData["right_gaze_point_on_display_area"][1];
+            print(parsedGazeData);
 
-            leftEyeX = parsedGazeData["left_gaze_point_on_display_area"][0];
-            leftEyeY = parsedGazeData["left_gaze_point_on_display_area"][1];
+            leftEyeX = parsedGazeData[leftGazePointOnDisplayArea][0];
+            leftEyeY = parsedGazeData[leftGazePointOnDisplayArea][1];
+
+            rightEyeX = parsedGazeData[rightGazePointOnDisplayArea][0];
+            rightEyeY = parsedGazeData[rightGazePointOnDisplayArea][1];
 
           } catch(e) {
             print(e);
