@@ -23,41 +23,42 @@ class GazeReceiver {
 
           /// read input coordinates and find semicolon for later parsing
           var coordinates = utf8.decode(dg.data);
-          Map<String, dynamic> gazeData = jsonDecode(coordinates);
-          print(gazeData["right_gaze_point_on_display_area"]);
-          print(gazeData["left_gaze_point_on_display_area"]);
 
-          /// remove parenthesis
-          // var coordinatesDigits = coordinates.replaceAll(new RegExp(r'\('), '').replaceAll(new RegExp(r'\)'), '');
+          Map<String, dynamic> parsedGazeData;
 
-          // /// ignore values which doesn't represent a number
-          // if (RegExp(r"0\.[0-9]{15,18}..?0\.[0-9]{15,18}..?0\.[0-9]{15,18}..?0\.[0-9]{15,18}").hasMatch(coordinatesDigits)) {
-          //   /// split up package into left and right eye lists
-          //   List<String> rawLines = coordinatesDigits.split(';');
-          //
-          //   /// split up left eye into x and y coordinates
-          //   List<String> leftEye = rawLines[0].split(', ');
-          //
-          //   /// split up right eye into x and y coordinates
-          //   List<String> rightEye = rawLines[1].split(', ');
-          //
-          //   /// add Left eye data and remove first offset
-          //   gazeData.add(Offset(double.parse(leftEye[0]), double.parse(leftEye[1])));
-          //   gazeData.removeAt(0);
-          //
-          //   /// add Right eye data and remove first offset
-          //   gazeData.add(Offset(double.parse(rightEye[0]), double.parse(rightEye[1])));
-          //   gazeData.removeAt(0);
-          //
-          //   /// trigger setState callback function
-          //   callback();
-          // }
+          double rightEyeX;
+          double rightEyeY;
+
+          double leftEyeX;
+          double leftEyeY;
+
+          try {
+            parsedGazeData = jsonDecode(coordinates);
+
+            rightEyeX = parsedGazeData["right_gaze_point_on_display_area"][0];
+            rightEyeY = parsedGazeData["right_gaze_point_on_display_area"][1];
+
+            leftEyeX = parsedGazeData["left_gaze_point_on_display_area"][0];
+            leftEyeY = parsedGazeData["left_gaze_point_on_display_area"][1];
+
+          } catch(e) {
+            print(e);
+          }
+
+          if (leftEyeX != null && leftEyeY != null) {
+            gazeData.add(Offset(leftEyeX, leftEyeY));
+            gazeData.removeAt(0);
+          }
+
+          if (rightEyeX != null && rightEyeY != null) {
+            gazeData.add(Offset(rightEyeX, rightEyeY));
+            gazeData.removeAt(0);
+          }
+
+          callback();
+
         }
-        // udpSocket.drain().then((_) {
-        //   udpSocket.close();
-        // });
 
-        // udpSocket.close();
       });
     });
   }
