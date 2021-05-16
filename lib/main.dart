@@ -1,6 +1,7 @@
 import 'dart:core';
 // import 'package:udp/udp.dart';
 import 'package:flutter/material.dart';
+import 'package:gazeAndTouch/screens/accuracy_screen.dart';
 import 'package:gazeAndTouch/screens/drawer_screen.dart';
 import 'package:gazeAndTouch/utils/gaze_listener.dart';
 import 'package:gazeAndTouch/utils/math.dart';
@@ -162,12 +163,26 @@ class _HomeScreenState extends State<HomeScreen> {
                       onPressed: () {
                         Map<String, double> dimensions = calcMeasurements(12.3, 1.5, 6.5, 2.16);
 
+                        print(dimensions);
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => MyHomePage(dimensions: dimensions)),
                         );
                       },
-                      child: Text("Mapping")),
+                      child: Text("Mapping"),
+                  ),
+                  ElevatedButton(
+                      onPressed: () {
+                        Map<String, double> dimensions = calcMeasurements(12.3, 1.5, 6.5, 2.16);
+
+                        print(dimensions);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => AccuracyScreen(dimensions: dimensions)),
+                        );
+                      },
+                      child: Text("Accuracy"),
+                  ),
                 ],
               ),
             ),
