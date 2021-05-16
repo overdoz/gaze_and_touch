@@ -55,6 +55,7 @@ class _NotificationsState extends State<Notifications> {
     setState(
       () {
         var timeStamp = DateTime.now().millisecondsSinceEpoch;
+        print(bannerKey.currentState.lastGaze);
 
         /// just consider the first gaze point of array
         Offset first = _offsets[0];

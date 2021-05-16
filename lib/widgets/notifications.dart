@@ -15,7 +15,7 @@ class NotificationsBannerState extends State<NotificationsBanner> with TickerPro
   AnimationController controller;
   Animation<double> animation;
   Timer _timer;
-  int lastGaze;
+  int lastGaze = 0;
   double widgetHeight = bannerHeightMin;
   double widgetWidth = 400;
   bool isUp = true;

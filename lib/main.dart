@@ -151,7 +151,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         // Map<String, double> dimensions = calcMeasurements(screenSize, aspectRatio, mobileScreenSize, mobileAspectRatio);
                         Map<String, double> dimensions = calcMeasurements(12.3, 1.5, 6.5, 2.16);
 
-
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => Notifications(dimensions: dimensions)),
@@ -159,6 +158,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                       child: Text("Let's start"),
                   ),
+                  ElevatedButton(
+                      onPressed: () {
+                        Map<String, double> dimensions = calcMeasurements(12.3, 1.5, 6.5, 2.16);
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => MyHomePage(dimensions: dimensions)),
+                        );
+                      },
+                      child: Text("Mapping")),
                 ],
               ),
             ),

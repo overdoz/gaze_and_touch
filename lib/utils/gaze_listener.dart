@@ -15,52 +15,56 @@ class GazeReceiver {
   }
 
   _init(List<Offset> gazeData, Function callback) {
-    RawDatagramSocket.bind(addressesIListenFrom, portIListenOn, reusePort: true).then((RawDatagramSocket udpSocket) {
-      udpSocket.forEach((RawSocketEvent event) {
-        if (event == RawSocketEvent.read) {
-          Datagram dg = udpSocket.receive();
+    RawDatagramSocket.bind(addressesIListenFrom, portIListenOn, reusePort: true).then(
+      (RawDatagramSocket udpSocket) {
+        udpSocket.forEach(
+          (RawSocketEvent event) {
+            if (event == RawSocketEvent.read) {
+              Datagram dg = udpSocket.receive();
 
-          /// read input coordinates and find semicolon for later parsing
-          var coordinates = utf8.decode(dg.data);
+              /// read input coordinates and find semicolon for later parsing
+              var eyeTrackerData = utf8.decode(dg.data);
 
-          Map<String, dynamic> parsedGazeData;
+              Map<String, dynamic> parsedGazeData;
 
-          double leftEyeX;
-          double leftEyeY;
+              double leftEyeX;
+              double leftEyeY;
 
-          double rightEyeX;
-          double rightEyeY;
+              double rightEyeX;
+              double rightEyeY;
 
-          try {
-            parsedGazeData = jsonDecode(coordinates);
+              try {
+                parsedGazeData = jsonDecode(eyeTrackerData);
 
-            print(parsedGazeData);
+                leftEyeX = parsedGazeData[leftGazePointOnDisplayArea][0];
+                leftEyeY = parsedGazeData[leftGazePointOnDisplayArea][1];
 
-            leftEyeX = parsedGazeData[leftGazePointOnDisplayArea][0];
-            leftEyeY = parsedGazeData[leftGazePointOnDisplayArea][1];
+                rightEyeX = parsedGazeData[rightGazePointOnDisplayArea][0];
+                rightEyeY = parsedGazeData[rightGazePointOnDisplayArea][1];
+              } catch (e) {
+                print(e);
+              }
 
-            rightEyeX = parsedGazeData[rightGazePointOnDisplayArea][0];
-            rightEyeY = parsedGazeData[rightGazePointOnDisplayArea][1];
+              // print("left eye x: $leftEyeX");
+              // print("left eye y: $leftEyeY");
+              // print("right eye x: $rightEyeX");
+              // print("right eye y: $rightEyeY");
 
-          } catch(e) {
-            print(e);
-          }
+              if (leftEyeX != null && leftEyeY != null) {
+                gazeData.add(Offset(leftEyeX, leftEyeY));
+                gazeData.removeAt(0);
+              }
 
-          if (leftEyeX != null && leftEyeY != null) {
-            gazeData.add(Offset(leftEyeX, leftEyeY));
-            gazeData.removeAt(0);
-          }
+              if (rightEyeX != null && rightEyeY != null) {
+                gazeData.add(Offset(rightEyeX, rightEyeY));
+                gazeData.removeAt(0);
+              }
 
-          if (rightEyeX != null && rightEyeY != null) {
-            gazeData.add(Offset(rightEyeX, rightEyeY));
-            gazeData.removeAt(0);
-          }
-
-          callback();
-
-        }
-
-      });
-    });
+              callback();
+            }
+          },
+        );
+      },
+    );
   }
 }

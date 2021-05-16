@@ -1,5 +1,8 @@
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
 double mapNum(double input, double inputA, double inputZ, double outputA, double outputZ) {
   return (input - inputA) / (inputZ - inputA) * (outputZ - outputA) + outputA;
 }
@@ -50,4 +53,25 @@ Map<String, double> calcMeasurements(double screenSize, double aspectRatio, doub
 
 
   return measurements;
+}
+
+Offset calcMeanPoint(List<Offset> offsets) {
+  double sumX = 0;
+  double sumY = 0;
+
+  int l = offsets.length;
+  print("length: $l");
+
+  for(final coordinate in offsets) {
+    print(coordinate);
+    sumX = sumX + coordinate.dx;
+
+    print(sumX);
+
+    sumY = sumY + coordinate.dy;
+    print(sumY);
+
+  }
+
+  return Offset(sumX / l, sumY / l);
 }
