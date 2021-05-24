@@ -26,20 +26,29 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
   final GlobalKey _topRightKey = GlobalKey();
   final GlobalKey _bottomLeftKey = GlobalKey();
   final GlobalKey _bottomRightKey = GlobalKey();
+  final GlobalKey _centerKey = GlobalKey();
 
   Map<String, double> dimensions;
 
   Offset topLeft = Offset.zero;
   Offset topLeftIcon = Offset.zero;
+  Size topLeftIconSize;
 
   Offset topRight = Offset.zero;
   Offset topRightIcon = Offset.zero;
+  Size topRightIconSize;
 
   Offset bottomLeft = Offset.zero;
   Offset bottomLeftIcon = Offset.zero;
+  Size bottomLeftIconSize;
 
   Offset bottomRight = Offset.zero;
   Offset bottomRightIcon = Offset.zero;
+  Size bottomRightIconSize;
+
+  Offset center = Offset.zero;
+  Offset centerIcon = Offset.zero;
+  Size centerIconSize;
 
 
   /// listens to incoming gaze data
@@ -114,6 +123,7 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
                                       setState(() {
                                         topLeft = calcMeanPoint(_offsets);
                                         topLeftIcon = getWidgetPosition(_topLeftKey);
+                                        topLeftIconSize = getWidgetSize(_topLeftKey);
                                       });
                                     },
                                     child: Text("Test"),
@@ -130,6 +140,7 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
                                       setState(() {
                                         topRight = calcMeanPoint(_offsets);
                                         topRightIcon = getWidgetPosition(_topRightKey);
+                                        topRightIconSize = getWidgetSize(_topRightKey);
                                       });
                                     },
                                     child: Text("Test"),
@@ -146,12 +157,13 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
                               /// Middle
                               Column(
                                 children: [
-                                  Icon(Icons.accessibility_new),
+                                  Icon(Icons.accessibility_new, key: _centerKey),
                                   ElevatedButton(
                                     onPressed: () {
                                       setState(() {
-                                        bottomLeft = calcMeanPoint(_offsets);
-                                        bottomLeftIcon = getWidgetPosition(_bottomLeftKey);
+                                        center = calcMeanPoint(_offsets);
+                                        centerIcon = getWidgetPosition(_centerKey);
+                                        centerIconSize = getWidgetSize(_centerKey);
                                       });
                                     },
                                     child: Text("Test"),
@@ -174,6 +186,8 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
                                       setState(() {
                                         bottomLeft = calcMeanPoint(_offsets);
                                         bottomLeftIcon = getWidgetPosition(_bottomLeftKey);
+                                        bottomLeftIconSize = getWidgetSize(_bottomLeftKey);
+
                                       });
                                     },
                                     child: Text("Test"),
@@ -189,6 +203,8 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
                                       setState(() {
                                         bottomRight = calcMeanPoint(_offsets);
                                         bottomRightIcon = getWidgetPosition(_bottomRightKey);
+                                        bottomRightIconSize = getWidgetSize(_bottomRightKey);
+
                                       });
                                     },
                                     child: Text("Test"),
@@ -213,20 +229,24 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
                                         mainAxisSize: MainAxisSize.min,
                                         children: <Widget>[
                                           Text('Top Left'),
-                                          Text('x: ${topLeftIcon.dx} y: ${topLeftIcon.dy}'),
+                                          Text('x: ${topLeftIcon.dx + topLeftIconSize.width / 2} y: ${topLeftIcon.dy + topLeftIconSize.height / 2}'),
                                           Text('x^: ${mapNum(topLeft.dx, dimensions["inputA width"], dimensions["inputB width"], 0, _size.width).toStringAsFixed(1)} y^: ${mapNum(topLeft.dy, dimensions["inputA height"], dimensions["inputB height"], 0, _size.height).toStringAsFixed(1)}'),
                                           SizedBox(height: 20,),
                                           Text('Top Right'),
-                                          Text('x: ${topRightIcon.dx} y: ${topRightIcon.dy}'),
+                                          Text('x: ${topRightIcon.dx + topRightIconSize.width / 2} y: ${topRightIcon.dy + topRightIconSize.height / 2}'),
                                           Text('x^: ${mapNum(topRight.dx, dimensions["inputA width"], dimensions["inputB width"], 0, _size.width).toStringAsFixed(1)} y^: ${mapNum(topRight.dy, dimensions["inputA height"], dimensions["inputB height"], 0, _size.height).toStringAsFixed(1)}'),
                                           SizedBox(height: 20,),
                                           Text('Bottom Left'),
-                                          Text('x: ${bottomLeftIcon.dx} y: ${bottomLeftIcon.dy}'),
+                                          Text('x: ${bottomLeftIcon.dx + bottomLeftIconSize.width / 2} y: ${bottomLeftIcon.dy + bottomLeftIconSize.height / 2}'),
                                           Text('x^: ${mapNum(bottomLeft.dx, dimensions["inputA width"], dimensions["inputB width"], 0, _size.width).toStringAsFixed(1)} y^: ${mapNum(bottomLeft.dy, dimensions["inputA height"], dimensions["inputB height"], 0, _size.height).toStringAsFixed(1)}'),
                                           SizedBox(height: 20,),
                                           Text('Bottom Right'),
-                                          Text('x: ${bottomRightIcon.dx} y: ${bottomRightIcon.dy}'),
+                                          Text('x: ${bottomRightIcon.dx + bottomRightIconSize.width / 2} y: ${bottomRightIcon.dy + bottomRightIconSize.height / 2}'),
                                           Text('x^: ${mapNum(bottomRight.dx, dimensions["inputA width"], dimensions["inputB width"], 0, _size.width).toStringAsFixed(1)} y^: ${mapNum(bottomLeft.dy, dimensions["inputA height"], dimensions["inputB height"], 0, _size.height).toStringAsFixed(1)}'),
+                                          SizedBox(height: 20,),
+                                          Text('Center'),
+                                          Text('x: ${centerIcon.dx + centerIconSize.width / 2} y: ${centerIcon.dy + centerIconSize.height / 2}'),
+                                          Text('x^: ${mapNum(center.dx, dimensions["inputA width"], dimensions["inputB width"], 0, _size.width).toStringAsFixed(1)} y^: ${mapNum(center.dy, dimensions["inputA height"], dimensions["inputB height"], 0, _size.height).toStringAsFixed(1)}'),
                                           SizedBox(height: 20,),
 
                                           ElevatedButton(
