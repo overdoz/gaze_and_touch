@@ -74,6 +74,8 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     _size = ScreenSize(height, width);
+    print(_size.width);
+    print(_size.height);
 
 
     return Container(
@@ -220,6 +222,30 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
                               showModalBottomSheet<void>(
                                 context: context,
                                 builder: (BuildContext context) {
+                                  var topLeftX = topLeftIcon.dx + topLeftIconSize.width / 2;
+                                  var topLeftY = topLeftIcon.dy + topLeftIconSize.height / 2;
+                                  var topLeftXhat = double.parse(mapNum(topLeft.dx, dimensions["inputA width"], dimensions["inputB width"], 0, _size.width).toStringAsFixed(1));
+                                  var topLeftYhat = double.parse(mapNum(topLeft.dy, dimensions["inputA height"], dimensions["inputB height"], 0, _size.height).toStringAsFixed(1));
+
+                                  var topRightX = topRightIcon.dx + topRightIconSize.width / 2;
+                                  var topRightY = topRightIcon.dy + topRightIconSize.height / 2;
+                                  var topRightXhat = double.parse(mapNum(topRight.dx, dimensions["inputA width"], dimensions["inputB width"], 0, _size.width).toStringAsFixed(1));
+                                  var topRightYhat = double.parse(mapNum(topRight.dy, dimensions["inputA height"], dimensions["inputB height"], 0, _size.height).toStringAsFixed(1));
+
+                                  var bottomLeftX = bottomLeftIcon.dx + bottomLeftIconSize.width / 2;
+                                  var bottomLeftY = bottomLeftIcon.dy + bottomLeftIconSize.height / 2;
+                                  var bottomLeftXhat = double.parse(mapNum(bottomLeft.dx, dimensions["inputA width"], dimensions["inputB width"], 0, _size.width).toStringAsFixed(1));
+                                  var bottomLeftYhat = double.parse(mapNum(bottomLeft.dy, dimensions["inputA height"], dimensions["inputB height"], 0, _size.height).toStringAsFixed(1));
+
+                                  var bottomRightX = bottomRightIcon.dx + bottomRightIconSize.width / 2;
+                                  var bottomRightY = bottomRightIcon.dy + bottomRightIconSize.height / 2;
+                                  var bottomRightXhat = double.parse(mapNum(bottomRight.dx, dimensions["inputA width"], dimensions["inputB width"], 0, _size.width).toStringAsFixed(1));
+                                  var bottomRightYhat = double.parse(mapNum(bottomRight.dy, dimensions["inputA height"], dimensions["inputB height"], 0, _size.height).toStringAsFixed(1));
+
+                                  var centerX = centerIcon.dx + centerIconSize.width / 2;
+                                  var centerY = centerIcon.dy + centerIconSize.height / 2;
+                                  var centerXhat = double.parse(mapNum(center.dx, dimensions["inputA width"], dimensions["inputB width"], 0, _size.width).toStringAsFixed(1));
+                                  var centerYhat = double.parse(mapNum(center.dy, dimensions["inputA height"], dimensions["inputB height"], 0, _size.height).toStringAsFixed(1));
                                   return Container(
                                     height: 500,
                                     color: Colors.amber,
@@ -229,25 +255,37 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
                                         mainAxisSize: MainAxisSize.min,
                                         children: <Widget>[
                                           Text('Top Left'),
-                                          Text('x: ${topLeftIcon.dx + topLeftIconSize.width / 2} y: ${topLeftIcon.dy + topLeftIconSize.height / 2}'),
-                                          Text('x^: ${mapNum(topLeft.dx, dimensions["inputA width"], dimensions["inputB width"], 0, _size.width).toStringAsFixed(1)} y^: ${mapNum(topLeft.dy, dimensions["inputA height"], dimensions["inputB height"], 0, _size.height).toStringAsFixed(1)}'),
+                                          Text('x: $topLeftX y: $topLeftY'),
+                                          Text('x^: $topLeftXhat y^: $topLeftYhat'),
                                           SizedBox(height: 20,),
                                           Text('Top Right'),
-                                          Text('x: ${topRightIcon.dx + topRightIconSize.width / 2} y: ${topRightIcon.dy + topRightIconSize.height / 2}'),
-                                          Text('x^: ${mapNum(topRight.dx, dimensions["inputA width"], dimensions["inputB width"], 0, _size.width).toStringAsFixed(1)} y^: ${mapNum(topRight.dy, dimensions["inputA height"], dimensions["inputB height"], 0, _size.height).toStringAsFixed(1)}'),
+                                          Text('x: $topRightX y: $topRightY'),
+                                          Text('x^: $topRightXhat y^: $topRightYhat'),
                                           SizedBox(height: 20,),
                                           Text('Bottom Left'),
-                                          Text('x: ${bottomLeftIcon.dx + bottomLeftIconSize.width / 2} y: ${bottomLeftIcon.dy + bottomLeftIconSize.height / 2}'),
-                                          Text('x^: ${mapNum(bottomLeft.dx, dimensions["inputA width"], dimensions["inputB width"], 0, _size.width).toStringAsFixed(1)} y^: ${mapNum(bottomLeft.dy, dimensions["inputA height"], dimensions["inputB height"], 0, _size.height).toStringAsFixed(1)}'),
+                                          Text('x: $bottomLeftX y: $bottomLeftY'),
+                                          Text('x^: $bottomLeftXhat y^: $bottomLeftYhat'),
                                           SizedBox(height: 20,),
                                           Text('Bottom Right'),
-                                          Text('x: ${bottomRightIcon.dx + bottomRightIconSize.width / 2} y: ${bottomRightIcon.dy + bottomRightIconSize.height / 2}'),
-                                          Text('x^: ${mapNum(bottomRight.dx, dimensions["inputA width"], dimensions["inputB width"], 0, _size.width).toStringAsFixed(1)} y^: ${mapNum(bottomLeft.dy, dimensions["inputA height"], dimensions["inputB height"], 0, _size.height).toStringAsFixed(1)}'),
+                                          Text('x: $bottomRightX y: $bottomRightY'),
+                                          Text('x^: $bottomRightXhat y^: $bottomRightYhat'),
                                           SizedBox(height: 20,),
                                           Text('Center'),
-                                          Text('x: ${centerIcon.dx + centerIconSize.width / 2} y: ${centerIcon.dy + centerIconSize.height / 2}'),
-                                          Text('x^: ${mapNum(center.dx, dimensions["inputA width"], dimensions["inputB width"], 0, _size.width).toStringAsFixed(1)} y^: ${mapNum(center.dy, dimensions["inputA height"], dimensions["inputB height"], 0, _size.height).toStringAsFixed(1)}'),
+                                          Text('x: $centerX y: $centerY'),
+                                          Text('x^: $centerXhat y^: $centerYhat'),
                                           SizedBox(height: 20,),
+                                          Row(
+                                            children: [
+                                              Text("Angle horizontal: "),
+                                              Text("${calcAngle((topLeftX-topLeftXhat).abs(), 600, _size.width, 69)}"),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              Text("Angle vertical: "),
+                                              Text("${calcAngle((topLeftY-topLeftYhat).abs(), 600, _size.height, 150)}"),
+                                            ],
+                                          ),
 
                                           ElevatedButton(
                                             child: const Text('Close BottomSheet'),

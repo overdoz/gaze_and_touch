@@ -1,5 +1,5 @@
 import 'dart:math';
-
+import 'package:vector_math/vector_math.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -74,4 +74,9 @@ Offset calcMeanPoint(List<Offset> offsets) {
   }
 
   return Offset(sumX / l, sumY / l);
+}
+
+double calcAngle(double pixel, double distance, double screenPixel, double screenMM) {
+  // return (degrees(atan((pixel / 2) / (distance * screenPixel / screenMM))) * 2);
+  return (degrees(atan((pixel / 2) / (distance * screenPixel / screenMM))) * 2);
 }
