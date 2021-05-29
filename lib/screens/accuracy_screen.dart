@@ -53,6 +53,14 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
   Offset centerIcon = Offset.zero;
   Size centerIconSize;
 
+  List<GlobalKey> keys = [
+    GlobalKey(),
+    GlobalKey(),
+    GlobalKey(),
+    GlobalKey(),
+    GlobalKey(),
+  ];
+
   List<AccuracyTarget> targets = [
     AccuracyTarget(Offset.zero, Offset.zero, Size.zero, 0),
     AccuracyTarget(Offset.zero, Offset.zero, Size.zero, 0),
@@ -80,16 +88,21 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
     if (counter == 0) return;
     _start = 3;
     setState(() {
-      targets[counter - 1].opacity = 1;
+      targets[counter - 1].show();
     });
     const oneSec = const Duration(seconds: 1);
     _timer = new Timer.periodic(
       oneSec,
       (Timer timer) {
+        if (_start == 1) {
+          targets[counter - 1].position = getWidgetPosition(keys[counter - 1]);
+          targets[counter - 1].recordedPos = calcMeanPoint(_offsets);
+          targets[counter - 1].size = getWidgetSize(keys[counter - 1]);
+        }
         if (_start == 0) {
           setState(() {
             timer.cancel();
-            targets[counter - 1].opacity = 0;
+            targets[counter - 1].hide();
             startTest(counter - 1);
           });
         } else {
@@ -188,7 +201,7 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
                                   padding: const EdgeInsets.all(16.0),
                                   child: Icon(
                                     Icons.album_outlined,
-                                    key: _topLeftKey,
+                                    key: keys[0],
                                   ),
                                 ),
                               ),
@@ -198,7 +211,7 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
                                 opacity: targets[1].opacity,
                                 child: Padding(
                                   padding: const EdgeInsets.all(16.0),
-                                  child: Icon(Icons.album_outlined, key: _topRightKey),
+                                  child: Icon(Icons.album_outlined, key: keys[1]),
                                 ),
                               ),
                             ],
@@ -210,7 +223,7 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
                               /// Middle
                               Opacity(
                                 opacity: targets[2].opacity,
-                                child: Icon(Icons.album_outlined, key: _centerKey),
+                                child: Icon(Icons.album_outlined, key: keys[2]),
                               ),
                             ],
                           ),
@@ -223,7 +236,7 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
                                 opacity: targets[3].opacity,
                                 child: Padding(
                                   padding: const EdgeInsets.all(16.0),
-                                  child: Icon(Icons.album_outlined, key: _bottomLeftKey),
+                                  child: Icon(Icons.album_outlined, key: keys[3]),
                                 ),
                               ),
 
@@ -232,7 +245,7 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
                                 opacity: targets[4].opacity,
                                 child: Padding(
                                   padding: const EdgeInsets.all(16.0),
-                                  child: Icon(Icons.album_outlined, key: _bottomRightKey),
+                                  child: Icon(Icons.album_outlined, key: keys[4]),
                                 ),
                               ),
                             ],
