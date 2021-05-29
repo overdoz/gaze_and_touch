@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:gazeAndTouch/models/accuracy_model.dart';
 import 'package:gazeAndTouch/utils/math.dart';
 import 'package:gazeAndTouch/utils/widget_details.dart';
 import 'dart:ui';
@@ -52,6 +53,18 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
   Offset centerIcon = Offset.zero;
   Size centerIconSize;
 
+  List<AccuracyTarget> targets = [
+    AccuracyTarget(Offset.zero, Offset.zero, Size.zero, 0),
+    AccuracyTarget(Offset.zero, Offset.zero, Size.zero, 0),
+    AccuracyTarget(Offset.zero, Offset.zero, Size.zero, 0),
+    AccuracyTarget(Offset.zero, Offset.zero, Size.zero, 0),
+    AccuracyTarget(Offset.zero, Offset.zero, Size.zero, 0),
+  ];
+
+  initTargets() {
+
+  }
+
   /// listens to incoming gaze data
   GazeReceiver _gazeInput;
 
@@ -64,6 +77,31 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
 
   Timer _timer;
   int _start = 10;
+
+  void startTest(int counter) {
+    if (counter == 0) return;
+    _start = 10;
+    setState(() {
+      targets[counter-1].opacity = 1;
+    });
+    const oneSec = const Duration(seconds: 1);
+    _timer = new Timer.periodic(
+      oneSec,
+          (Timer timer) {
+        if (_start == 0) {
+          setState(() {
+            timer.cancel();
+            targets[counter-1].opacity = 0;
+            startTest(counter-1);
+          });
+        } else {
+          setState(() {
+            _start--;
+          });
+        }
+      },
+    );
+  }
 
   void startTimer() {
     print("Start timer");
@@ -93,7 +131,7 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
   void initState() {
     super.initState();
     print("init State");
-    startTimer();
+    startTest(5);
   }
 
   // Future<Widget> setupTest() async {}
@@ -147,40 +185,18 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               /// Top Left
-                              Column(
-                                children: [
-                                  Icon(
-                                    Icons.accessibility_new,
-                                    key: _topLeftKey,
-                                  ),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        topLeft = calcMeanPoint(_offsets);
-                                        topLeftIcon = getWidgetPosition(_topLeftKey);
-                                        topLeftIconSize = getWidgetSize(_topLeftKey);
-                                      });
-                                    },
-                                    child: Text("Test"),
-                                  ),
-                                ],
+                              Opacity(
+                                opacity: targets[0].opacity,
+                                child: Icon(
+                                  Icons.accessibility_new,
+                                  key: _topLeftKey,
+                                ),
                               ),
 
                               /// Top Right
-                              Column(
-                                children: [
-                                  Icon(Icons.accessibility_new, key: _topRightKey),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        topRight = calcMeanPoint(_offsets);
-                                        topRightIcon = getWidgetPosition(_topRightKey);
-                                        topRightIconSize = getWidgetSize(_topRightKey);
-                                      });
-                                    },
-                                    child: Text("Test"),
-                                  ),
-                                ],
+                              Opacity(
+                                opacity: targets[1].opacity,
+                                child: Icon(Icons.accessibility_new, key: _topRightKey),
                               ),
                             ],
                           ),
@@ -189,20 +205,9 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               /// Middle
-                              Column(
-                                children: [
-                                  Icon(Icons.accessibility_new, key: _centerKey),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        center = calcMeanPoint(_offsets);
-                                        centerIcon = getWidgetPosition(_centerKey);
-                                        centerIconSize = getWidgetSize(_centerKey);
-                                      });
-                                    },
-                                    child: Text("Test"),
-                                  ),
-                                ],
+                              Opacity(
+                                opacity: targets[2].opacity,
+                                child: Icon(Icons.accessibility_new, key: _centerKey),
                               ),
                             ],
                           ),
@@ -211,37 +216,15 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               /// Bottom Left
-                              Column(
-                                children: [
-                                  Icon(Icons.accessibility_new, key: _bottomLeftKey),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        bottomLeft = calcMeanPoint(_offsets);
-                                        bottomLeftIcon = getWidgetPosition(_bottomLeftKey);
-                                        bottomLeftIconSize = getWidgetSize(_bottomLeftKey);
-                                      });
-                                    },
-                                    child: Text("Test"),
-                                  ),
-                                ],
+                              Opacity(
+                                opacity: targets[3].opacity,
+                                child: Icon(Icons.accessibility_new, key: _bottomLeftKey),
                               ),
 
-                              /// Bottom Right
-                              Column(
-                                children: [
-                                  Icon(Icons.accessibility_new, key: _bottomRightKey),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        bottomRight = calcMeanPoint(_offsets);
-                                        bottomRightIcon = getWidgetPosition(_bottomRightKey);
-                                        bottomRightIconSize = getWidgetSize(_bottomRightKey);
-                                      });
-                                    },
-                                    child: Text("Test"),
-                                  ),
-                                ],
+                              /// Bottom Rights
+                              Opacity(
+                                opacity: targets[4].opacity,
+                                child: Icon(Icons.accessibility_new, key: _bottomRightKey),
                               ),
                             ],
                           ),
