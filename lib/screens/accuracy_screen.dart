@@ -33,26 +33,6 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
 
   Map<String, double> dimensions;
 
-  Offset topLeft = Offset.zero;
-  Offset topLeftIcon = Offset.zero;
-  Size topLeftIconSize;
-
-  Offset topRight = Offset.zero;
-  Offset topRightIcon = Offset.zero;
-  Size topRightIconSize;
-
-  Offset bottomLeft = Offset.zero;
-  Offset bottomLeftIcon = Offset.zero;
-  Size bottomLeftIconSize;
-
-  Offset bottomRight = Offset.zero;
-  Offset bottomRightIcon = Offset.zero;
-  Size bottomRightIconSize;
-
-  Offset center = Offset.zero;
-  Offset centerIcon = Offset.zero;
-  Size centerIconSize;
-
   List<GlobalKey> keys = [
     GlobalKey(),
     GlobalKey(),
@@ -95,9 +75,12 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
       oneSec,
       (Timer timer) {
         if (_start == 1) {
-          targets[counter - 1].position = getWidgetPosition(keys[counter - 1]);
+          var pos = getWidgetPosition(keys[counter - 1]);
+          var size = getWidgetSize(keys[counter - 1]);
+
           targets[counter - 1].recordedPos = calcMeanPoint(_offsets);
-          targets[counter - 1].size = getWidgetSize(keys[counter - 1]);
+          targets[counter - 1].size = size;
+          targets[counter - 1].position = Offset(pos.dx + size.width / 2, pos.dy + size.height / 2);
         }
         if (_start == 0) {
           setState(() {
@@ -106,26 +89,6 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
             startTest(counter - 1);
           });
         } else {
-          setState(() {
-            _start--;
-          });
-        }
-      },
-    );
-  }
-
-  void startTimer() {
-    print("Start timer");
-    const oneSec = const Duration(seconds: 1);
-    _timer = new Timer.periodic(
-      oneSec,
-      (Timer timer) {
-        if (_start == 0) {
-          setState(() {
-            timer.cancel();
-          });
-        } else {
-          print(_start);
           setState(() {
             _start--;
           });
@@ -255,47 +218,16 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
                               showModalBottomSheet<void>(
                                 context: context,
                                 builder: (BuildContext context) {
-                                  var topLeftX = topLeftIcon.dx + topLeftIconSize.width / 2;
-                                  var topLeftY = topLeftIcon.dy + topLeftIconSize.height / 2;
-                                  var topLeftXhat = double.parse(
-                                      mapNum(topLeft.dx, dimensions["inputA width"], dimensions["inputB width"], 0, _size.width).toStringAsFixed(1));
-                                  var topLeftYhat = double.parse(
-                                      mapNum(topLeft.dy, dimensions["inputA height"], dimensions["inputB height"], 0, _size.height)
-                                          .toStringAsFixed(1));
+                                  var horizontal = 0.0;
+                                  var vertical = 0.0;
+                                  for (var t in targets) {
+                                    t.recordedPos = t.getRecordedPos(_size, dimensions, t.recordedPos);
+                                    horizontal += calcAngle((t.position.dx - t.recordedPos.dx).abs(), 600, _size.width, 69);
+                                    vertical += calcAngle((t.position.dy - t.recordedPos.dy).abs(), 600, _size.width, 150);
+                                  }
+                                  var angleHorizontal = horizontal / targets.length;
+                                  var angleVertical = vertical / targets.length;
 
-                                  var topRightX = topRightIcon.dx + topRightIconSize.width / 2;
-                                  var topRightY = topRightIcon.dy + topRightIconSize.height / 2;
-                                  var topRightXhat = double.parse(
-                                      mapNum(topRight.dx, dimensions["inputA width"], dimensions["inputB width"], 0, _size.width).toStringAsFixed(1));
-                                  var topRightYhat = double.parse(
-                                      mapNum(topRight.dy, dimensions["inputA height"], dimensions["inputB height"], 0, _size.height)
-                                          .toStringAsFixed(1));
-
-                                  var bottomLeftX = bottomLeftIcon.dx + bottomLeftIconSize.width / 2;
-                                  var bottomLeftY = bottomLeftIcon.dy + bottomLeftIconSize.height / 2;
-                                  var bottomLeftXhat = double.parse(
-                                      mapNum(bottomLeft.dx, dimensions["inputA width"], dimensions["inputB width"], 0, _size.width)
-                                          .toStringAsFixed(1));
-                                  var bottomLeftYhat = double.parse(
-                                      mapNum(bottomLeft.dy, dimensions["inputA height"], dimensions["inputB height"], 0, _size.height)
-                                          .toStringAsFixed(1));
-
-                                  var bottomRightX = bottomRightIcon.dx + bottomRightIconSize.width / 2;
-                                  var bottomRightY = bottomRightIcon.dy + bottomRightIconSize.height / 2;
-                                  var bottomRightXhat = double.parse(
-                                      mapNum(bottomRight.dx, dimensions["inputA width"], dimensions["inputB width"], 0, _size.width)
-                                          .toStringAsFixed(1));
-                                  var bottomRightYhat = double.parse(
-                                      mapNum(bottomRight.dy, dimensions["inputA height"], dimensions["inputB height"], 0, _size.height)
-                                          .toStringAsFixed(1));
-
-                                  var centerX = centerIcon.dx + centerIconSize.width / 2;
-                                  var centerY = centerIcon.dy + centerIconSize.height / 2;
-                                  var centerXhat = double.parse(
-                                      mapNum(center.dx, dimensions["inputA width"], dimensions["inputB width"], 0, _size.width).toStringAsFixed(1));
-                                  var centerYhat = double.parse(
-                                      mapNum(center.dy, dimensions["inputA height"], dimensions["inputB height"], 0, _size.height)
-                                          .toStringAsFixed(1));
                                   return Container(
                                     height: 500,
                                     color: Colors.amber,
@@ -305,45 +237,47 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
                                         mainAxisSize: MainAxisSize.min,
                                         children: <Widget>[
                                           Text('Top Left'),
-                                          Text('x: $topLeftX y: $topLeftY'),
-                                          Text('x^: $topLeftXhat y^: $topLeftYhat'),
+                                          Text('x: ${targets[0].position.dx} y: ${targets[0].position.dy}'),
+                                          Text('x^: ${targets[0].recordedPos.dx} y^: ${targets[0].recordedPos.dy}'),
                                           SizedBox(
                                             height: 20,
                                           ),
                                           Text('Top Right'),
-                                          Text('x: $topRightX y: $topRightY'),
-                                          Text('x^: $topRightXhat y^: $topRightYhat'),
+                                          Text('x: ${targets[1].position.dx} y: ${targets[1].position.dy}'),
+                                          Text('x^: ${targets[1].recordedPos.dx} y^: ${targets[1].recordedPos.dy}'),
                                           SizedBox(
                                             height: 20,
                                           ),
                                           Text('Bottom Left'),
-                                          Text('x: $bottomLeftX y: $bottomLeftY'),
-                                          Text('x^: $bottomLeftXhat y^: $bottomLeftYhat'),
+                                          Text('x: ${targets[3].position.dx} y: ${targets[3].position.dy}'),
+                                          Text('x^: ${targets[3].recordedPos.dx} y^: ${targets[3].recordedPos.dy}'),
                                           SizedBox(
                                             height: 20,
                                           ),
                                           Text('Bottom Right'),
-                                          Text('x: $bottomRightX y: $bottomRightY'),
-                                          Text('x^: $bottomRightXhat y^: $bottomRightYhat'),
+                                          Text('x: ${targets[4].position.dx} y: ${targets[4].position.dy}'),
+                                          Text('x^: ${targets[4].recordedPos.dx} y^: ${targets[4].recordedPos.dy}'),
                                           SizedBox(
                                             height: 20,
                                           ),
                                           Text('Center'),
-                                          Text('x: $centerX y: $centerY'),
-                                          Text('x^: $centerXhat y^: $centerYhat'),
+                                          Text('x: ${targets[2].position.dx} y: ${targets[2].position.dy}'),
+                                          Text('x^: ${targets[2].recordedPos.dx} y^: ${targets[2].recordedPos.dy}'),
                                           SizedBox(
                                             height: 20,
                                           ),
                                           Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               Text("Angle horizontal: "),
-                                              Text("${calcAngle((topLeftX - topLeftXhat).abs(), 600, _size.width, 69)}"),
+                                              Text("${angleHorizontal.toStringAsFixed(3)}"),
                                             ],
                                           ),
                                           Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               Text("Angle vertical: "),
-                                              Text("${calcAngle((topLeftY - topLeftYhat).abs(), 600, _size.height, 150)}"),
+                                              Text("${angleVertical.toStringAsFixed(3)}"),
                                             ],
                                           ),
                                           ElevatedButton(
