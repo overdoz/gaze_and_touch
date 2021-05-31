@@ -42,11 +42,11 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
   ];
 
   List<AccuracyTarget> targets = [
-    AccuracyTarget(Offset.zero, Offset.zero, Size.zero, 0),
-    AccuracyTarget(Offset.zero, Offset.zero, Size.zero, 0),
-    AccuracyTarget(Offset.zero, Offset.zero, Size.zero, 0),
-    AccuracyTarget(Offset.zero, Offset.zero, Size.zero, 0),
-    AccuracyTarget(Offset.zero, Offset.zero, Size.zero, 0),
+    AccuracyTarget("Top Left", Offset.zero, Offset.zero, Size.zero, 0),
+    AccuracyTarget("Top Right", Offset.zero, Offset.zero, Size.zero, 0),
+    AccuracyTarget("Center", Offset.zero, Offset.zero, Size.zero, 0),
+    AccuracyTarget("Bottom Left", Offset.zero, Offset.zero, Size.zero, 0),
+    AccuracyTarget("Bottom Right", Offset.zero, Offset.zero, Size.zero, 0),
   ];
 
   initTargets() {}
@@ -63,6 +63,7 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
 
   Timer _timer;
   int _start = 3;
+  int _timerCounter = 10;
 
   void startTest(int counter) {
     if (counter == 0) return;
@@ -97,6 +98,25 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
     );
   }
 
+  void startTimer() {
+    const oneSec = const Duration(seconds: 1);
+    _timer = new Timer.periodic(
+      oneSec,
+          (Timer timer) {
+        if (_timerCounter == 0) {
+          setState(() {
+            timer.cancel();
+            startTest(5);
+          });
+        } else {
+          setState(() {
+            _timerCounter--;
+          });
+        }
+      },
+    );
+  }
+
   callback() {
     setState(() {});
   }
@@ -105,7 +125,7 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
   void initState() {
     super.initState();
     print("init State");
-    startTest(5);
+    startTimer();
   }
 
   // Future<Widget> setupTest() async {}
@@ -302,7 +322,7 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
                     child: Opacity(
                         opacity: 0.3,
                         child: Text(
-                          "$_start",
+                          _timerCounter != 0 ? "$_timerCounter" : "",
                           style: TextStyle(fontSize: 100, fontWeight: FontWeight.bold),
                         ))),
               ],

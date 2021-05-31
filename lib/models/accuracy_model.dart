@@ -4,13 +4,14 @@ import '../models/screens_model.dart';
 
 
 class AccuracyTarget {
+  String name;
   Offset position;
   Offset recordedPos;
   Size size;
   GlobalKey key;
   double opacity;
 
-  AccuracyTarget(this.position, this.recordedPos, this.size, this.opacity);
+  AccuracyTarget(this.name, this.position, this.recordedPos, this.size, this.opacity);
 
   void show() {
     this.opacity = 1;
