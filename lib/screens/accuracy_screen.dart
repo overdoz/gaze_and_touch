@@ -1,14 +1,16 @@
 import 'dart:async';
+import 'dart:core';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:gazeAndTouch/models/accuracy_model.dart';
+import 'package:gazeAndTouch/utils/csv_results.dart';
 import 'package:gazeAndTouch/utils/math.dart';
 import 'package:gazeAndTouch/utils/widget_details.dart';
-import 'dart:ui';
-import 'dart:core';
+
+import '../models/screens_model.dart';
 import '../shapes/painters.dart';
 import '../utils/gaze_listener.dart';
-import '../models/screens_model.dart';
 
 class AccuracyScreen extends StatefulWidget {
   AccuracyScreen({Key key, this.dimensions}) : super(key: key);
@@ -102,7 +104,7 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
     const oneSec = const Duration(seconds: 1);
     _timer = new Timer.periodic(
       oneSec,
-          (Timer timer) {
+      (Timer timer) {
         if (_timerCounter == 0) {
           setState(() {
             timer.cancel();
@@ -302,7 +304,10 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
                                           ),
                                           ElevatedButton(
                                             child: const Text('Close BottomSheet'),
-                                            onPressed: () => Navigator.pop(context),
+                                            // onPressed: () => Navigator.pop(context),
+                                            onPressed: () {
+                                              generateCsv(context);
+                                            },
                                           )
                                         ],
                                       ),
