@@ -1,7 +1,8 @@
-import 'dart:ui';
-import 'dart:io';
-import 'dart:core';
 import 'dart:convert';
+import 'dart:core';
+import 'dart:io';
+import 'dart:ui';
+
 import '../constants.dart';
 
 typedef void VoidCallback();
@@ -14,11 +15,11 @@ class GazeReceiver {
     _init(gazeData, this.callback);
   }
 
-  _init(List<Offset> gazeData, Function callback) {
+  Future<void> _init(List<Offset> gazeData, Function callback) async {
     RawDatagramSocket.bind(addressesIListenFrom, portIListenOn, reusePort: true).then(
       (RawDatagramSocket udpSocket) {
         udpSocket.forEach(
-          (RawSocketEvent event) {
+          (RawSocketEvent event) async {
             if (event == RawSocketEvent.read) {
               Datagram dg = udpSocket.receive();
 
@@ -42,13 +43,8 @@ class GazeReceiver {
                 rightEyeX = parsedGazeData[rightGazePointOnDisplayArea][0];
                 rightEyeY = parsedGazeData[rightGazePointOnDisplayArea][1];
               } catch (e) {
-                print(e);
+                // print(e);
               }
-
-              // print("left eye x: $leftEyeX");
-              // print("left eye y: $leftEyeY");
-              // print("right eye x: $rightEyeX");
-              // print("right eye y: $rightEyeY");
 
               if (leftEyeX != null && leftEyeY != null) {
                 gazeData.add(Offset(leftEyeX, leftEyeY));
@@ -59,7 +55,6 @@ class GazeReceiver {
                 gazeData.add(Offset(rightEyeX, rightEyeY));
                 gazeData.removeAt(0);
               }
-
               callback();
             }
           },

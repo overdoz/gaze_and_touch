@@ -1,6 +1,7 @@
-import 'dart:ui';
 import 'dart:core';
 import 'dart:math';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:gazeAndTouch/models/screens_model.dart';
 import 'package:gazeAndTouch/utils/math.dart';
@@ -14,7 +15,6 @@ class FaceOutlinePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-
     /// Define a paint object
     final paint = Paint()
       ..style = PaintingStyle.stroke
@@ -23,7 +23,8 @@ class FaceOutlinePainter extends CustomPainter {
 
     /// iterate through all gazepoints
     for (var offset in offsets) {
-      var screenPoint = Offset(mapNum(offset.dx, dimensions["inputA width"], dimensions["inputB width"], 0, screen.width), mapNum(offset.dy, dimensions["inputA height"], dimensions["inputB height"], 0, screen.height));
+      var screenPoint = Offset(mapNum(offset.dx, dimensions["inputA width"], dimensions["inputB width"], 0, screen.width),
+          mapNum(offset.dy, dimensions["inputA height"], dimensions["inputB height"], 0, screen.height));
       // var screenPoint = Offset(mapNum(offset.dx, 0.392, 0.6159, 0, screen.width), mapNum(offset.dy, 0.097, 0.7313, 0, screen.height));
       canvas.drawPoints(PointMode.points, [screenPoint], paint);
     }
@@ -37,12 +38,7 @@ class WheelPainter extends CustomPainter {
   Path getWheelPath(double wheelSize, double fromRadius, double toRadius) {
     return new Path()
       ..moveTo(wheelSize, wheelSize)
-      ..arcTo(
-          Rect.fromCircle(
-              radius: wheelSize, center: Offset(wheelSize, wheelSize)),
-          fromRadius,
-          toRadius,
-          false)
+      ..arcTo(Rect.fromCircle(radius: wheelSize, center: Offset(wheelSize, wheelSize)), fromRadius, toRadius, false)
       ..close();
   }
 
@@ -58,18 +54,12 @@ class WheelPainter extends CustomPainter {
     double nbElem = 6;
     double radius = (2 * pi) / nbElem;
 
-    canvas.drawPath(
-        getWheelPath(wheelSize, 0, radius), getColoredPaint(Colors.red));
-    canvas.drawPath(getWheelPath(wheelSize, radius, radius),
-        getColoredPaint(Colors.purple));
-    canvas.drawPath(getWheelPath(wheelSize, radius * 2, radius),
-        getColoredPaint(Colors.blue));
-    canvas.drawPath(getWheelPath(wheelSize, radius * 3, radius),
-        getColoredPaint(Colors.green));
-    canvas.drawPath(getWheelPath(wheelSize, radius * 4, radius),
-        getColoredPaint(Colors.yellow));
-    canvas.drawPath(getWheelPath(wheelSize, radius * 5, radius),
-        getColoredPaint(Colors.orange));
+    canvas.drawPath(getWheelPath(wheelSize, 0, radius), getColoredPaint(Colors.red));
+    canvas.drawPath(getWheelPath(wheelSize, radius, radius), getColoredPaint(Colors.purple));
+    canvas.drawPath(getWheelPath(wheelSize, radius * 2, radius), getColoredPaint(Colors.blue));
+    canvas.drawPath(getWheelPath(wheelSize, radius * 3, radius), getColoredPaint(Colors.green));
+    canvas.drawPath(getWheelPath(wheelSize, radius * 4, radius), getColoredPaint(Colors.yellow));
+    canvas.drawPath(getWheelPath(wheelSize, radius * 5, radius), getColoredPaint(Colors.orange));
   }
 
   @override

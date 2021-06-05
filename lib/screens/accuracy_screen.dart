@@ -25,14 +25,6 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
   // add 10 initial gaze points hidden at (0,0)
   final _offsets = <Offset>[for (var i = 0; i < 10; i++) Offset(0, 0)];
 
-  final GlobalKey _key = GlobalKey();
-
-  final GlobalKey _topLeftKey = GlobalKey();
-  final GlobalKey _topRightKey = GlobalKey();
-  final GlobalKey _bottomLeftKey = GlobalKey();
-  final GlobalKey _bottomRightKey = GlobalKey();
-  final GlobalKey _centerKey = GlobalKey();
-
   Map<String, double> dimensions;
 
   List<GlobalKey> keys = [
@@ -65,9 +57,9 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
 
   Timer _timer;
   int _start = 3;
-  int _timerCounter = 10;
+  int _timerCounter = 5;
 
-  void startTest(int counter) {
+  Future<void> startTest(int counter) async {
     if (counter == 0) return;
     _start = 3;
     setState(() {
@@ -100,15 +92,15 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
     );
   }
 
-  void startTimer() {
+  Future<void> startTimer() async {
     const oneSec = const Duration(seconds: 1);
     _timer = new Timer.periodic(
       oneSec,
       (Timer timer) {
         if (_timerCounter == 0) {
-          setState(() {
+          setState(() async {
             timer.cancel();
-            startTest(5);
+            await startTest(5);
           });
         } else {
           setState(() {
