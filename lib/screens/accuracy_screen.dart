@@ -68,7 +68,7 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
     const oneSec = const Duration(seconds: 1);
     _timer = new Timer.periodic(
       oneSec,
-      (Timer timer) {
+      (Timer timer) async {
         if (_start == 1) {
           var pos = getWidgetPosition(keys[counter - 1]);
           var size = getWidgetSize(keys[counter - 1]);
@@ -81,8 +81,8 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
           setState(() {
             timer.cancel();
             targets[counter - 1].hide();
-            startTest(counter - 1);
           });
+          await startTest(counter - 1);
         } else {
           setState(() {
             _start--;
@@ -96,12 +96,12 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
     const oneSec = const Duration(seconds: 1);
     _timer = new Timer.periodic(
       oneSec,
-      (Timer timer) {
+      (Timer timer) async {
         if (_timerCounter == 0) {
-          setState(() async {
+          setState(() {
             timer.cancel();
-            await startTest(5);
           });
+          await startTest(5);
         } else {
           setState(() {
             _timerCounter--;
@@ -130,8 +130,6 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     _size = ScreenSize(height, width);
-    print(_size.width);
-    print(_size.height);
 
     return Container(
       color: Colors.white,
@@ -172,25 +170,10 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               /// Top Left
-                              Opacity(
-                                opacity: targets[0].opacity,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Icon(
-                                    Icons.album_outlined,
-                                    key: keys[0],
-                                  ),
-                                ),
-                              ),
+                              _createTarget(keys[0], targets[0].opacity),
 
                               /// Top Right
-                              Opacity(
-                                opacity: targets[1].opacity,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Icon(Icons.album_outlined, key: keys[1]),
-                                ),
-                              ),
+                              _createTarget(keys[1], targets[1].opacity),
                             ],
                           ),
                           Spacer(),
@@ -198,10 +181,7 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               /// Middle
-                              Opacity(
-                                opacity: targets[2].opacity,
-                                child: Icon(Icons.album_outlined, key: keys[2]),
-                              ),
+                              _createTarget(keys[2], targets[2].opacity),
                             ],
                           ),
                           Spacer(),
@@ -209,22 +189,10 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               /// Bottom Left
-                              Opacity(
-                                opacity: targets[3].opacity,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Icon(Icons.album_outlined, key: keys[3]),
-                                ),
-                              ),
+                              _createTarget(keys[3], targets[3].opacity),
 
                               /// Bottom Rights
-                              Opacity(
-                                opacity: targets[4].opacity,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Icon(Icons.album_outlined, key: keys[4]),
-                                ),
-                              ),
+                              _createTarget(keys[4], targets[4].opacity),
                             ],
                           ),
                           ElevatedButton(
@@ -250,36 +218,11 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         mainAxisSize: MainAxisSize.min,
                                         children: <Widget>[
-                                          Text('Top Left'),
-                                          Text('x: ${targets[0].position.dx} y: ${targets[0].position.dy}'),
-                                          Text('x^: ${targets[0].recordedPos.dx} y^: ${targets[0].recordedPos.dy}'),
-                                          SizedBox(
-                                            height: 20,
-                                          ),
-                                          Text('Top Right'),
-                                          Text('x: ${targets[1].position.dx} y: ${targets[1].position.dy}'),
-                                          Text('x^: ${targets[1].recordedPos.dx} y^: ${targets[1].recordedPos.dy}'),
-                                          SizedBox(
-                                            height: 20,
-                                          ),
-                                          Text('Bottom Left'),
-                                          Text('x: ${targets[3].position.dx} y: ${targets[3].position.dy}'),
-                                          Text('x^: ${targets[3].recordedPos.dx} y^: ${targets[3].recordedPos.dy}'),
-                                          SizedBox(
-                                            height: 20,
-                                          ),
-                                          Text('Bottom Right'),
-                                          Text('x: ${targets[4].position.dx} y: ${targets[4].position.dy}'),
-                                          Text('x^: ${targets[4].recordedPos.dx} y^: ${targets[4].recordedPos.dy}'),
-                                          SizedBox(
-                                            height: 20,
-                                          ),
-                                          Text('Center'),
-                                          Text('x: ${targets[2].position.dx} y: ${targets[2].position.dy}'),
-                                          Text('x^: ${targets[2].recordedPos.dx} y^: ${targets[2].recordedPos.dy}'),
-                                          SizedBox(
-                                            height: 20,
-                                          ),
+                                          _createRecording("Top Left", targets[0]),
+                                          _createRecording("Top Right", targets[1]),
+                                          _createRecording("Bottom Left", targets[3]),
+                                          _createRecording("Bottom Right", targets[4]),
+                                          _createRecording("Center", targets[2]),
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
@@ -325,6 +268,32 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _createRecording(String title, AccuracyTarget target) {
+    return Column(
+      children: [
+        Text(title),
+        Text('x: ${target.position.dx} y: ${target.position.dy}'),
+        Text('x^: ${target.recordedPos.dx} y^: ${target.recordedPos.dy}'),
+        SizedBox(
+          height: 20,
+        ),
+      ],
+    );
+  }
+
+  Widget _createTarget(Key key, double opacity) {
+    return Opacity(
+      opacity: opacity,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Icon(
+          Icons.album_outlined,
+          key: key,
         ),
       ),
     );

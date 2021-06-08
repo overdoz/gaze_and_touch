@@ -1,7 +1,8 @@
 import 'dart:math';
-import 'package:vector_math/vector_math.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:vector_math/vector_math.dart';
 
 double mapNum(double input, double inputA, double inputZ, double outputA, double outputZ) {
   return (input - inputA) / (inputZ - inputA) * (outputZ - outputA) + outputA;
@@ -34,23 +35,20 @@ Map<String, double> calcMeasurements(double screenSize, double aspectRatio, doub
   var inputBWidth = inputAWidth + (widthMobile / widthScreen);
 
   /// vertical starting and endpoint in percent
-  var inputAHeight = marginVertical / heightScreen;
+  var inputAHeight = marginVertical / heightScreen; // correction
   var inputBHeight = inputAHeight + (heightMobile / heightScreen);
 
   /// TODO: get aspect ratio from context
 
   measurements["inputA width"] = inputAWidth;
-  print(measurements["inputA width"]);
 
   measurements["inputB width"] = inputBWidth;
-  print(measurements["inputB width"]);
 
   measurements["inputA height"] = inputAHeight;
+  print("InputA Height:");
   print(measurements["inputA height"]);
 
   measurements["inputB height"] = inputBHeight;
-  print(measurements["inputB height"]);
-
 
   return measurements;
 }
@@ -62,7 +60,7 @@ Offset calcMeanPoint(List<Offset> offsets) {
   int l = offsets.length;
   print("length: $l");
 
-  for(final coordinate in offsets) {
+  for (final coordinate in offsets) {
     print(coordinate);
     sumX = sumX + coordinate.dx;
 
@@ -70,7 +68,6 @@ Offset calcMeanPoint(List<Offset> offsets) {
 
     sumY = sumY + coordinate.dy;
     print(sumY);
-
   }
 
   return Offset(sumX / l, sumY / l);

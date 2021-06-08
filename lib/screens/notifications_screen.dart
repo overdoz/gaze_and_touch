@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:gazeAndTouch/constants.dart';
 import 'package:gazeAndTouch/models/screens_model.dart';
 import 'package:gazeAndTouch/utils/gaze_listener.dart';
 import 'package:gazeAndTouch/utils/widget_details.dart';
 import 'package:gazeAndTouch/widgets/notifications.dart';
-import 'package:gazeAndTouch/constants.dart';
-import '../shapes/painters.dart';
-import '../widgets/notifications.dart';
-import '../widgets/feed.dart';
+
 import '../data/feed_data.dart';
+import '../shapes/painters.dart';
+import '../widgets/feed.dart';
+import '../widgets/notifications.dart';
 
 class Notifications extends StatefulWidget {
   Notifications({Key key, this.dimensions}) : super(key: key);
@@ -38,7 +39,6 @@ class _NotificationsState extends State<Notifications> {
   /// initial gaze data
   final _offsets = <Offset>[for (var i = 0; i < 10; i++) Offset(100, 200)];
 
-
   @override
   void initState() {
     super.initState();
@@ -55,7 +55,6 @@ class _NotificationsState extends State<Notifications> {
     setState(
       () {
         var timeStamp = DateTime.now().millisecondsSinceEpoch;
-        print(bannerKey.currentState.lastGaze);
 
         /// just consider the first gaze point of array
         Offset first = _offsets[0];

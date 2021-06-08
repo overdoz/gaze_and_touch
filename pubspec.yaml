@@ -21,6 +21,7 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
+  permission_handler: ^8.0.1
   csv: ^5.0.0
   path_provider: ^2.0.2
   vector_math: any
