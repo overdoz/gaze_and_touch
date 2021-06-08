@@ -43,8 +43,6 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
     AccuracyTarget("Bottom Right", Offset.zero, Offset.zero, Size.zero, 0),
   ];
 
-  initTargets() {}
-
   /// listens to incoming gaze data
   GazeReceiver _gazeInput;
 
@@ -93,20 +91,15 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
   }
 
   Future<void> startTimer() async {
-    const oneSec = const Duration(seconds: 1);
-    _timer = new Timer.periodic(
-      oneSec,
-      (Timer timer) async {
-        if (_timerCounter == 0) {
-          setState(() {
-            timer.cancel();
-          });
-          await startTest(5);
-        } else {
-          setState(() {
+    var counterStream = Stream<int>.periodic(Duration(seconds: 1), (x) => x).take(5);
+    counterStream.forEach(
+      (e) => {
+        setState(
+          () {
             _timerCounter--;
-          });
-        }
+          },
+        ),
+        if (_timerCounter == 0) {startTest(5)}
       },
     );
   }
@@ -121,8 +114,6 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
     print("init State");
     startTimer();
   }
-
-  // Future<Widget> setupTest() async {}
 
   @override
   Widget build(BuildContext context) {

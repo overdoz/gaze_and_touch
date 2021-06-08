@@ -15,6 +15,8 @@ class GazeReceiver {
     _init(gazeData, this.callback);
   }
 
+  Stream<Offset> receiveGazeData() async* {}
+
   Future<void> _init(List<Offset> gazeData, Function callback) async {
     RawDatagramSocket.bind(addressesIListenFrom, portIListenOn, reusePort: true).then(
       (RawDatagramSocket udpSocket) {
