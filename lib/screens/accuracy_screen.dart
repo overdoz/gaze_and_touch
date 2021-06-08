@@ -223,20 +223,8 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
                                           _createRecording("Bottom Left", targets[3]),
                                           _createRecording("Bottom Right", targets[4]),
                                           _createRecording("Center", targets[2]),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Text("Angle horizontal: "),
-                                              Text("${angleHorizontal.toStringAsFixed(3)}"),
-                                            ],
-                                          ),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Text("Angle vertical: "),
-                                              Text("${angleVertical.toStringAsFixed(3)}"),
-                                            ],
-                                          ),
+                                          _createAngle("Angle horizontal: ", angleHorizontal.toStringAsFixed(3)),
+                                          _createAngle("Angle vertical: ", angleVertical.toStringAsFixed(3)),
                                           ElevatedButton(
                                             child: const Text('Close BottomSheet'),
                                             // onPressed: () => Navigator.pop(context),
@@ -258,13 +246,7 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
                     ),
                   ],
                 ),
-                Center(
-                    child: Opacity(
-                        opacity: 0.3,
-                        child: Text(
-                          _timerCounter != 0 ? "$_timerCounter" : "",
-                          style: TextStyle(fontSize: 100, fontWeight: FontWeight.bold),
-                        ))),
+                _createCountdown(_timerCounter),
               ],
             ),
           ),
@@ -294,6 +276,28 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
         child: Icon(
           Icons.album_outlined,
           key: key,
+        ),
+      ),
+    );
+  }
+
+  Widget _createAngle(String title, String angle) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(title),
+        Text(angle),
+      ],
+    );
+  }
+
+  Widget _createCountdown(int counter) {
+    return Center(
+      child: Opacity(
+        opacity: 0.3,
+        child: Text(
+          counter != 0 ? "$counter" : "",
+          style: TextStyle(fontSize: 100, fontWeight: FontWeight.bold),
         ),
       ),
     );
