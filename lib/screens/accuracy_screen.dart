@@ -45,6 +45,7 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
 
   /// listens to incoming gaze data
   GazeReceiver _gazeInput;
+  Stream<Offset> _gazeStream;
 
   /// initial screen size which will be overwritten during render
   ScreenSize _size = new ScreenSize(0, 0);
@@ -58,6 +59,12 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
   int _timerCounter = 5;
 
   Future<void> startTest(int counter) async {
+    /// listen to stream
+    var subscription = _gazeStream.listen((event) {
+      _offsets.add(event);
+      _offsets.removeAt(0);
+    });
+
     if (counter == 0) return;
     _start = 3;
     setState(() {
@@ -79,6 +86,7 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
           setState(() {
             timer.cancel();
             targets[counter - 1].hide();
+            subscription.cancel();
           });
           await startTest(counter - 1);
         } else {
@@ -111,6 +119,7 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
   @override
   void initState() {
     super.initState();
+    _gazeStream = _gazeInput.createGazeStream();
     print("init State");
     startTimer();
   }

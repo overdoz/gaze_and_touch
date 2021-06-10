@@ -15,7 +15,46 @@ class GazeReceiver {
     _init(gazeData, this.callback);
   }
 
-  Stream<Offset> receiveGazeData() async* {}
+  Stream<Offset> createGazeStream() async* {
+    RawDatagramSocket.bind(addressesIListenFrom, portIListenOn, reusePort: true).then(
+      (RawDatagramSocket udpSocket) {
+        udpSocket.forEach(
+          (RawSocketEvent event) async* {
+            if (event == RawSocketEvent.read) {
+              Datagram dg = udpSocket.receive();
+
+              /// read input coordinates and find semicolon for later parsing
+              var eyeTrackerData = utf8.decode(dg.data);
+
+              Map<String, dynamic> parsedGazeData;
+
+              double leftEyeX;
+              double leftEyeY;
+
+              double rightEyeX;
+              double rightEyeY;
+
+              try {
+                parsedGazeData = jsonDecode(eyeTrackerData);
+
+                leftEyeX = parsedGazeData[leftGazePointOnDisplayArea][0];
+                leftEyeY = parsedGazeData[leftGazePointOnDisplayArea][1];
+
+                rightEyeX = parsedGazeData[rightGazePointOnDisplayArea][0];
+                rightEyeY = parsedGazeData[rightGazePointOnDisplayArea][1];
+              } catch (e) {
+                // print(e);
+              }
+
+              if (leftEyeX != null && leftEyeY != null && rightEyeX != null && rightEyeY != null) {
+                yield Offset((leftEyeX + rightEyeX) / 2, (leftEyeY + rightEyeY) / 2);
+              }
+            }
+          },
+        );
+      },
+    );
+  }
 
   Future<void> _init(List<Offset> gazeData, Function callback) async {
     RawDatagramSocket.bind(addressesIListenFrom, portIListenOn, reusePort: true).then(
