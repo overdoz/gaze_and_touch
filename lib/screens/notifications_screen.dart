@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gazeAndTouch/constants.dart';
+import 'package:gazeAndTouch/models/gaze_model.dart';
 import 'package:gazeAndTouch/models/screens_model.dart';
 import 'package:gazeAndTouch/utils/gaze_listener.dart';
 import 'package:gazeAndTouch/utils/widget_details.dart';
@@ -37,7 +38,7 @@ class _NotificationsState extends State<Notifications> {
   ScreenSize _size = new ScreenSize(0, 0);
 
   /// initial gaze data
-  final _offsets = <Offset>[for (var i = 0; i < 10; i++) Offset(100, 200)];
+  final _gazePoints = <GazePoint>[for (var i = 0; i < 10; i++) GazePoint.initial()];
 
   @override
   void initState() {
@@ -48,30 +49,7 @@ class _NotificationsState extends State<Notifications> {
       _banner = getWidget(bannerKey);
     });
 
-    _gazeInput = new GazeReceiver(_offsets, callback);
-  }
-
-  callback() {
-    setState(
-      () {
-        var timeStamp = DateTime.now().millisecondsSinceEpoch;
-
-        /// just consider the first gaze point of array
-        Offset first = _offsets[0];
-        Offset gazePoint = new Offset(first.dx * _size.width, first.dy * _size.height);
-
-        /// expand banner when gaze touches the UI element
-        if (isWithinWidget(gazePoint, _banner)) {
-          bannerKey.currentState.expand();
-          bannerKey.currentState.setNewTime();
-        }
-
-        /// hide banner 3 seconds after you stop starring at it
-        if (timeStamp >= bannerKey.currentState.lastGaze + 3000) {
-          bannerKey.currentState.moveUp();
-        }
-      },
-    );
+    //  _gazeInput = new GazeReceiver(_offsets, callback);
   }
 
   @override
@@ -157,7 +135,7 @@ class _NotificationsState extends State<Notifications> {
                       child: Container(
                         width: double.infinity,
                         height: double.infinity,
-                        child: CustomPaint(painter: FaceOutlinePainter(_offsets, _size, dimensions)),
+                        child: CustomPaint(painter: FaceOutlinePainter(_gazePoints, _size, dimensions)),
                       ),
                     ),
 

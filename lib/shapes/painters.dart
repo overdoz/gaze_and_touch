@@ -3,15 +3,16 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:gazeAndTouch/models/gaze_model.dart';
 import 'package:gazeAndTouch/models/screens_model.dart';
 import 'package:gazeAndTouch/utils/math.dart';
 
 class FaceOutlinePainter extends CustomPainter {
-  final List<Offset> offsets;
+  final List<GazePoint> gazePoints;
   final ScreenSize screen;
   final Map<String, double> dimensions;
 
-  FaceOutlinePainter(this.offsets, this.screen, this.dimensions) : super();
+  FaceOutlinePainter(this.gazePoints, this.screen, this.dimensions) : super();
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -22,9 +23,9 @@ class FaceOutlinePainter extends CustomPainter {
       ..color = Colors.indigo;
 
     /// iterate through all gazepoints
-    for (var offset in offsets) {
-      var screenPoint = Offset(mapNum(offset.dx, dimensions["inputA width"], dimensions["inputB width"], 0, screen.width),
-          mapNum(offset.dy, dimensions["inputA height"], dimensions["inputB height"], 0, screen.height));
+    for (var point in gazePoints) {
+      var screenPoint = Offset(mapNum(point.x, dimensions["inputA width"], dimensions["inputB width"], 0, screen.width),
+          mapNum(point.y, dimensions["inputA height"], dimensions["inputB height"], 0, screen.height));
       // var screenPoint = Offset(mapNum(offset.dx, 0.392, 0.6159, 0, screen.width), mapNum(offset.dy, 0.097, 0.7313, 0, screen.height));
       canvas.drawPoints(PointMode.points, [screenPoint], paint);
     }

@@ -4,6 +4,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:gazeAndTouch/models/accuracy_model.dart';
+import 'package:gazeAndTouch/models/gaze_model.dart';
 import 'package:gazeAndTouch/utils/csv_results.dart';
 import 'package:gazeAndTouch/utils/math.dart';
 import 'package:gazeAndTouch/utils/widget_details.dart';
@@ -22,8 +23,9 @@ class AccuracyScreen extends StatefulWidget {
 }
 
 class _AccuracyScreenState extends State<AccuracyScreen> {
-  // add 10 initial gaze points hidden at (0,0)
-  final _offsets = <Offset>[for (var i = 0; i < 10; i++) Offset(0, 0)];
+  /// add 10 initial gaze points hidden at (0,0)
+  final _gazePoints = <GazePoint>[for (var i = 0; i < 10; i++) GazePoint.initial()];
+  final _userData = <Gaze>[];
 
   Map<String, double> dimensions;
 
@@ -36,69 +38,110 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
   ];
 
   List<AccuracyTarget> targets = [
-    AccuracyTarget("Top Left", Offset.zero, Offset.zero, Size.zero, 0),
-    AccuracyTarget("Top Right", Offset.zero, Offset.zero, Size.zero, 0),
-    AccuracyTarget("Center", Offset.zero, Offset.zero, Size.zero, 0),
-    AccuracyTarget("Bottom Left", Offset.zero, Offset.zero, Size.zero, 0),
-    AccuracyTarget("Bottom Right", Offset.zero, Offset.zero, Size.zero, 0),
+    AccuracyTarget(name: "Top Left", position: GazePoint.initial(), recordedPos: GazePoint.initial(), size: Size.zero, opacity: 0),
+    AccuracyTarget(name: "Top Right", position: GazePoint.initial(), recordedPos: GazePoint.initial(), size: Size.zero, opacity: 0),
+    AccuracyTarget(name: "Center", position: GazePoint.initial(), recordedPos: GazePoint.initial(), size: Size.zero, opacity: 0),
+    AccuracyTarget(name: "Bottom Left", position: GazePoint.initial(), recordedPos: GazePoint.initial(), size: Size.zero, opacity: 0),
+    AccuracyTarget(name: "Bottom Right", position: GazePoint.initial(), recordedPos: GazePoint.initial(), size: Size.zero, opacity: 0),
   ];
 
   /// listens to incoming gaze data
   GazeReceiver _gazeInput;
-  Stream<Offset> _gazeStream;
-
-  /// initial screen size which will be overwritten during render
-  ScreenSize _size = new ScreenSize(0, 0);
-
-  _AccuracyScreenState({this.dimensions}) {
-    _gazeInput = new GazeReceiver(_offsets, callback);
-  }
+  Stream<Gaze> _gazeStream;
 
   Timer _timer;
   int _start = 3;
   int _timerCounter = 5;
 
+  /// initial screen size which will be overwritten during render
+  ScreenSize _size = new ScreenSize(0, 0);
+
+  _AccuracyScreenState({this.dimensions}) {
+    _gazeInput = new GazeReceiver(this.callback, this._userData, this._gazePoints);
+  }
+
+  void callback() {
+    setState(() {});
+  }
+
+  @override
+  initState() {
+    super.initState();
+    _gazeInput.init(this._gazePoints, this.callback);
+    // _gazeStream = _gazeInput.createGazeStream();
+    // _gazeInput.init();
+    // var subscription = _gazeStream.listen((gaze) {
+    //   setState(() {
+    //     /// collect data for rendering
+    //     _gazePoints.add(gaze.gazePoint);
+    //     _gazePoints.removeAt(0);
+    //
+    //     /// collect data for study
+    //     _userData.add(gaze);
+    //   });
+    // });
+    print("init State");
+    startTimer();
+
+    // subscription.cancel();
+  }
+
+  // TODO: collect IMU data
   Future<void> startTest(int counter) async {
     /// listen to stream
-    var subscription = _gazeStream.listen((event) {
-      _offsets.add(event);
-      _offsets.removeAt(0);
-    });
+    // var subscription = _gazeStream.listen((gaze) {
+    //   setState(() {
+    //     /// collect data for rendering
+    //     _gazePoints.add(gaze.gazePoint);
+    //     _gazePoints.removeAt(0);
+    //
+    //     /// collect data for study
+    //     _userData.add(gaze);
+    //   });
+    // });
 
-    if (counter == 0) return;
-    _start = 3;
-    setState(() {
-      targets[counter - 1].show();
-    });
-    const oneSec = const Duration(seconds: 1);
-    _timer = new Timer.periodic(
-      oneSec,
-      (Timer timer) async {
-        if (_start == 1) {
-          var pos = getWidgetPosition(keys[counter - 1]);
-          var size = getWidgetSize(keys[counter - 1]);
+    Future<void> iterateTest(int c) async {
+      if (c == 0) return;
+      _start = 3;
+      setState(() {
+        targets[c - 1].show();
+      });
+      const oneSec = const Duration(seconds: 1);
+      _timer = new Timer.periodic(
+        oneSec,
+        (Timer timer) async {
+          if (_start == 1) {
+            var pos = getWidgetPosition(keys[c - 1]);
+            var size = getWidgetSize(keys[c - 1]);
 
-          targets[counter - 1].recordedPos = calcMeanPoint(_offsets);
-          targets[counter - 1].size = size;
-          targets[counter - 1].position = Offset(pos.dx + size.width / 2, pos.dy + size.height / 2);
-        }
-        if (_start == 0) {
-          setState(() {
-            timer.cancel();
-            targets[counter - 1].hide();
-            subscription.cancel();
-          });
-          await startTest(counter - 1);
-        } else {
-          setState(() {
-            _start--;
-          });
-        }
-      },
-    );
+            /// record all metrics when the timer hits 1
+            targets[c - 1].recordedPos = calcMeanPoint(_gazePoints);
+            targets[c - 1].size = size;
+            targets[c - 1].position = GazePoint(x: pos.dx + size.width / 2, y: pos.dy + size.height / 2);
+          }
+          if (_start == 0) {
+            setState(() {
+              timer.cancel();
+              targets[c - 1].hide();
+            });
+            await iterateTest(c - 1);
+          } else {
+            setState(() {
+              _start--;
+            });
+          }
+        },
+      );
+      if (c == 0) {
+        // subscription.cancel();
+      }
+    }
+
+    iterateTest(counter);
   }
 
   Future<void> startTimer() async {
+    /// create stream for timer
     var counterStream = Stream<int>.periodic(Duration(seconds: 1), (x) => x).take(5);
     counterStream.forEach(
       (e) => {
@@ -110,18 +153,6 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
         if (_timerCounter == 0) {startTest(5)}
       },
     );
-  }
-
-  callback() {
-    setState(() {});
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _gazeStream = _gazeInput.createGazeStream();
-    print("init State");
-    startTimer();
   }
 
   @override
@@ -144,7 +175,7 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
                   child: Container(
                     width: double.infinity,
                     height: double.infinity,
-                    child: CustomPaint(painter: FaceOutlinePainter(_offsets, _size, dimensions)),
+                    child: CustomPaint(painter: FaceOutlinePainter(_gazePoints, _size, dimensions)),
                   ),
                 ),
 
@@ -197,15 +228,17 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
                           ),
                           ElevatedButton(
                             onPressed: () {
+                              // TODO: create CSV
+                              var matrix = _generateDataMatrix(this._userData);
                               showModalBottomSheet<void>(
                                 context: context,
                                 builder: (BuildContext context) {
                                   var horizontal = 0.0;
                                   var vertical = 0.0;
-                                  for (var t in targets) {
-                                    t.recordedPos = t.getRecordedPos(_size, dimensions, t.recordedPos);
-                                    horizontal += calcAngle((t.position.dx - t.recordedPos.dx).abs(), 600, _size.width, 69);
-                                    vertical += calcAngle((t.position.dy - t.recordedPos.dy).abs(), 600, _size.width, 150);
+                                  for (var target in targets) {
+                                    target.recordedPos = target.getRecordedPosInPx(_size, dimensions, target.recordedPos);
+                                    horizontal += calcAngle((target.position.x - target.recordedPos.x).abs(), 600, _size.width, 69);
+                                    vertical += calcAngle((target.position.y - target.recordedPos.y).abs(), 600, _size.width, 150);
                                   }
                                   var angleHorizontal = horizontal / targets.length;
                                   var angleVertical = vertical / targets.length;
@@ -259,8 +292,8 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
     return Column(
       children: [
         Text(title),
-        Text('x: ${target.position.dx} y: ${target.position.dy}'),
-        Text('x^: ${target.recordedPos.dx} y^: ${target.recordedPos.dy}'),
+        Text('x: ${target.position.x} y: ${target.position.y}'),
+        Text('x^: ${target.recordedPos.x} y^: ${target.recordedPos.y}'),
         SizedBox(
           height: 20,
         ),
@@ -301,5 +334,9 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
         ),
       ),
     );
+  }
+
+  List<List> _generateDataMatrix(List<Gaze> gazeData) {
+    return gazeData.map((gaze) => [gaze.gazePoint.x, gaze.gazePoint.y, gaze.timeStampDevice, gaze.timeStampEyeTracker]).toList();
   }
 }

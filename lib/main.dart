@@ -1,20 +1,61 @@
 import 'dart:core';
+import 'dart:io';
+import 'dart:typed_data';
+
 // import 'package:udp/udp.dart';
 import 'package:flutter/material.dart';
+import 'package:gazeAndTouch/models/screens_model.dart';
 import 'package:gazeAndTouch/screens/accuracy_screen.dart';
-import 'package:gazeAndTouch/screens/drawer_screen.dart';
 import 'package:gazeAndTouch/utils/gaze_listener.dart';
 import 'package:gazeAndTouch/utils/math.dart';
-import 'package:gazeAndTouch/utils/widget_details.dart';
-import 'package:gazeAndTouch/models/screens_model.dart';
-import './screens/notifications_screen.dart';
-import './shapes/painters.dart';
-import './screens/mapping_screen.dart';
-import './screens/buttons_screen.dart';
-import 'constants.dart';
 
-void main() {
+import './screens/notifications_screen.dart';
+
+Future<void> main() async {
+  // // bind the socket server to an address and port
+  // final server = await ServerSocket.bind(InternetAddress.anyIPv4, 65003);
+  //
+  // // listen for clent connections to the server
+  // server.listen((client) {
+  //   print("Listening...");
+  //   handleConnection(client);
+  // });
+
   runApp(MyApp());
+}
+
+void handleConnection(Socket client) {
+  print('Connection from'
+      ' ${client.remoteAddress.address}:${client.remotePort}');
+
+  // listen for events from the client
+  client.listen(
+    // handle data from the client
+    (Uint8List data) async {
+      await Future.delayed(Duration(seconds: 1));
+      final message = String.fromCharCodes(data);
+      if (message == 'Knock, knock.') {
+        client.write('Who is there?');
+      } else if (message.length < 10) {
+        client.write('$message who?');
+      } else {
+        client.write('Very funny.');
+        client.close();
+      }
+    },
+
+    // handle errors
+    onError: (error) {
+      print(error);
+      client.close();
+    },
+
+    // handle the client closing the connection
+    onDone: () {
+      print('Client left');
+      client.close();
+    },
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -43,7 +84,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   double screenSize;
   double aspectRatio;
   double mobileScreenSize;
@@ -65,18 +105,13 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
 
     // _gazeInput = new GazeReceiver(_offsets, callback);
-
   }
-
 
   callback() {
     setState(
-          () {
-
-      },
+          () {},
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -99,10 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: const EdgeInsets.all(30.0),
                     child: TextField(
                       keyboardType: TextInputType.numberWithOptions(decimal: true),
-                      decoration: InputDecoration(
-                        labelText: "screen size",
-                        hintText: "screen size in inch (e.g. 13\")"
-                      ),
+                      decoration: InputDecoration(labelText: "screen size", hintText: "screen size in inch (e.g. 13\")"),
                       onChanged: (text) {
                         screenSize = double.parse(text);
                       },
@@ -112,10 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: const EdgeInsets.all(30.0),
                     child: TextField(
                       keyboardType: TextInputType.numberWithOptions(decimal: true),
-                      decoration: InputDecoration(
-                        labelText: "aspect ratio",
-                          hintText: "aspect ratio (e.g. 4:3 = 1.33)"
-                      ),
+                      decoration: InputDecoration(labelText: "aspect ratio", hintText: "aspect ratio (e.g. 4:3 = 1.33)"),
                       onChanged: (text) {
                         aspectRatio = double.parse(text);
                       },
@@ -125,10 +154,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: const EdgeInsets.all(30.0),
                     child: TextField(
                       keyboardType: TextInputType.numberWithOptions(decimal: true),
-                      decoration: InputDecoration(
-                        labelText: "mobile screen size",
-                          hintText: "mobile screen size in inch (e.g. 6.5\")"
-                      ),
+                      decoration: InputDecoration(labelText: "mobile screen size", hintText: "mobile screen size in inch (e.g. 6.5\")"),
                       onChanged: (text) {
                         mobileScreenSize = double.parse(text);
                       },
@@ -138,79 +164,39 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: const EdgeInsets.all(30.0),
                     child: TextField(
                       keyboardType: TextInputType.numberWithOptions(decimal: true),
-                      decoration: InputDecoration(
-                        labelText: "mobile aspect ratio",
-                          hintText: "mobile aspect ratio (e.g. 19.5:9 = 2.16)"
-                      ),
+                      decoration: InputDecoration(labelText: "mobile aspect ratio", hintText: "mobile aspect ratio (e.g. 19.5:9 = 2.16)"),
                       onChanged: (text) {
                         mobileAspectRatio = double.parse(text);
                       },
                     ),
                   ),
                   ElevatedButton(
-                      onPressed: () {
-                        // Map<String, double> dimensions = calcMeasurements(screenSize, aspectRatio, mobileScreenSize, mobileAspectRatio);
-                        Map<String, double> dimensions = calcMeasurements(12.3, 1.5, 6.5, 2.16);
+                    onPressed: () {
+                      // Map<String, double> dimensions = calcMeasurements(screenSize, aspectRatio, mobileScreenSize, mobileAspectRatio);
+                      Map<String, double> dimensions = calcMeasurements(12.3, 1.5, 6.5, 2.16);
 
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => Notifications(dimensions: dimensions)),
-                        );
-                      },
-                      child: Text("Let's start"),
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Notifications(dimensions: dimensions)),
+                      );
+                    },
+                    child: Text("Example"),
                   ),
                   ElevatedButton(
-                      onPressed: () {
-                        Map<String, double> dimensions = calcMeasurements(12.3, 1.5, 6.5, 2.16);
+                    onPressed: () {
+                      Map<String, double> dimensions = calcMeasurements(12.3, 1.5, 6.5, 2.16);
 
-                        print(dimensions);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => MyHomePage(dimensions: dimensions)),
-                        );
-                      },
-                      child: Text("Mapping"),
-                  ),
-                  ElevatedButton(
-                      onPressed: () {
-                        Map<String, double> dimensions = calcMeasurements(12.3, 1.5, 6.5, 2.16);
-
-                        print(dimensions);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => AccuracyScreen(dimensions: dimensions)),
-                        );
-                      },
-                      child: Text("Accuracy"),
+                      print(dimensions);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => AccuracyScreen(dimensions: dimensions)),
+                      );
+                    },
+                    child: Text("Accuracy Test"),
                   ),
                 ],
               ),
             ),
-
-            // ElevatedButton(
-            //     onPressed: () {
-            //       Navigator.push(
-            //         context,
-            //         MaterialPageRoute(builder: (context) => MyHomePage()),
-            //       );
-            //     },
-            //     child: Text("Mapping")),
-            // ElevatedButton(
-            //     onPressed: () {
-            //       Navigator.push(
-            //         context,
-            //         MaterialPageRoute(builder: (context) => DrawerScreen()),
-            //       );
-            //     },
-            //     child: Text("Drawer")),
-            // ElevatedButton(
-            //     onPressed: () {
-            //       Navigator.push(
-            //         context,
-            //         MaterialPageRoute(builder: (context) => ButtonsScreen()),
-            //       );
-            //     },
-            //     child: Text("Buttons")),
           ],
         ),
       ),

@@ -1,7 +1,6 @@
 import 'dart:math';
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:gazeAndTouch/models/gaze_model.dart';
 import 'package:vector_math/vector_math.dart';
 
 double mapNum(double input, double inputA, double inputZ, double outputA, double outputZ) {
@@ -53,24 +52,18 @@ Map<String, double> calcMeasurements(double screenSize, double aspectRatio, doub
   return measurements;
 }
 
-Offset calcMeanPoint(List<Offset> offsets) {
+GazePoint calcMeanPoint(List<GazePoint> gazePoints) {
   double sumX = 0;
   double sumY = 0;
 
-  int l = offsets.length;
-  print("length: $l");
+  int l = gazePoints.length;
 
-  for (final coordinate in offsets) {
-    print(coordinate);
-    sumX = sumX + coordinate.dx;
-
-    print(sumX);
-
-    sumY = sumY + coordinate.dy;
-    print(sumY);
+  for (final gaze in gazePoints) {
+    sumX = sumX + gaze.x;
+    sumY = sumY + gaze.y;
   }
 
-  return Offset(sumX / l, sumY / l);
+  return GazePoint(x: (sumX / l), y: (sumY / l));
 }
 
 double calcAngle(double pixel, double distance, double screenPixel, double screenMM) {
