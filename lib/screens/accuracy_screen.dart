@@ -230,6 +230,8 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
                             onPressed: () {
                               // TODO: create CSV
                               var matrix = _generateDataMatrix(this._userData);
+                              saveData(matrix);
+
                               showModalBottomSheet<void>(
                                 context: context,
                                 builder: (BuildContext context) {
@@ -336,7 +338,7 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
     );
   }
 
-  List<List> _generateDataMatrix(List<Gaze> gazeData) {
-    return gazeData.map((gaze) => [gaze.gazePoint.x, gaze.gazePoint.y, gaze.timeStampDevice, gaze.timeStampEyeTracker]).toList();
+  List<List<String>> _generateDataMatrix(List<Gaze> gazeData) {
+    return gazeData.map((gaze) => [gaze.sx, gaze.sy, gaze.timeStampDevice, gaze.timeStampEyeTracker]).toList();
   }
 }

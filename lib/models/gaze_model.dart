@@ -7,6 +7,22 @@ class Gaze {
     return [gazePoint.x, gazePoint.y, timeStampEyeTracker, timeStampDevice];
   }
 
+  String get sx {
+    return gazePoint.x.toString();
+  }
+
+  String get sy {
+    return gazePoint.y.toString();
+  }
+
+  double get dx {
+    return gazePoint.x;
+  }
+
+  double get dy {
+    return gazePoint.y;
+  }
+
   Gaze({this.gazePoint, this.timeStampEyeTracker, this.timeStampDevice});
 }
 
