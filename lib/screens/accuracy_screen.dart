@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:gazeAndTouch/models/accuracy_model.dart';
 import 'package:gazeAndTouch/models/gaze_model.dart';
+import 'package:gazeAndTouch/models/user_test_model.dart';
 import 'package:gazeAndTouch/utils/csv_results.dart';
 import 'package:gazeAndTouch/utils/math.dart';
 import 'package:gazeAndTouch/utils/widget_details.dart';
@@ -14,12 +15,13 @@ import '../shapes/painters.dart';
 import '../utils/gaze_listener.dart';
 
 class AccuracyScreen extends StatefulWidget {
-  AccuracyScreen({Key key, this.dimensions}) : super(key: key);
+  AccuracyScreen({Key key, this.dimensions, this.userTest}) : super(key: key);
 
   final Map<String, double> dimensions;
+  final UserTest userTest;
 
   @override
-  _AccuracyScreenState createState() => _AccuracyScreenState(dimensions: this.dimensions);
+  _AccuracyScreenState createState() => _AccuracyScreenState(dimensions: this.dimensions, userTest: this.userTest);
 }
 
 class _AccuracyScreenState extends State<AccuracyScreen> {
@@ -28,6 +30,7 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
   final _userData = <Gaze>[];
 
   Map<String, double> dimensions;
+  UserTest userTest;
 
   List<GlobalKey> keys = [
     GlobalKey(),
@@ -37,13 +40,13 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
     GlobalKey(),
   ];
 
-  List<AccuracyTarget> targets = [
-    AccuracyTarget(name: "Top Left", position: GazePoint.initial(), recordedPos: GazePoint.initial(), size: Size.zero, opacity: 0),
-    AccuracyTarget(name: "Top Right", position: GazePoint.initial(), recordedPos: GazePoint.initial(), size: Size.zero, opacity: 0),
-    AccuracyTarget(name: "Center", position: GazePoint.initial(), recordedPos: GazePoint.initial(), size: Size.zero, opacity: 0),
-    AccuracyTarget(name: "Bottom Left", position: GazePoint.initial(), recordedPos: GazePoint.initial(), size: Size.zero, opacity: 0),
-    AccuracyTarget(name: "Bottom Right", position: GazePoint.initial(), recordedPos: GazePoint.initial(), size: Size.zero, opacity: 0),
-  ];
+  // List<AccuracyTarget> targets = [
+  //   AccuracyTarget(name: "Top Left", position: GazePoint.initial(), recordedPos: GazePoint.initial(), size: Size.zero, opacity: 0),
+  //   AccuracyTarget(name: "Top Right", position: GazePoint.initial(), recordedPos: GazePoint.initial(), size: Size.zero, opacity: 0),
+  //   AccuracyTarget(name: "Center", position: GazePoint.initial(), recordedPos: GazePoint.initial(), size: Size.zero, opacity: 0),
+  //   AccuracyTarget(name: "Bottom Left", position: GazePoint.initial(), recordedPos: GazePoint.initial(), size: Size.zero, opacity: 0),
+  //   AccuracyTarget(name: "Bottom Right", position: GazePoint.initial(), recordedPos: GazePoint.initial(), size: Size.zero, opacity: 0),
+  // ];
 
   /// listens to incoming gaze data
   GazeReceiver _gazeInput;
@@ -56,7 +59,7 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
   /// initial screen size which will be overwritten during render
   ScreenSize _size = new ScreenSize(0, 0);
 
-  _AccuracyScreenState({this.dimensions}) {
+  _AccuracyScreenState({this.dimensions, this.userTest}) {
     _gazeInput = new GazeReceiver(this.callback, this._userData, this._gazePoints);
   }
 
@@ -101,30 +104,33 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
     // });
 
     Future<void> iterateTest(int c) async {
+      var targets = userTest.targetResults;
+      var index = c - 1;
+
       if (c == 0) return;
       _start = 3;
       setState(() {
-        targets[c - 1].show();
+        targets[index].show();
       });
       const oneSec = const Duration(seconds: 1);
       _timer = new Timer.periodic(
         oneSec,
         (Timer timer) async {
           if (_start == 1) {
-            var pos = getWidgetPosition(keys[c - 1]);
-            var size = getWidgetSize(keys[c - 1]);
+            var pos = getWidgetPosition(keys[index]);
+            var size = getWidgetSize(keys[index]);
 
             /// record all metrics when the timer hits 1
-            targets[c - 1].recordedPos = calcMeanPoint(_gazePoints);
-            targets[c - 1].size = size;
-            targets[c - 1].position = GazePoint(x: pos.dx + size.width / 2, y: pos.dy + size.height / 2);
+            targets[index].recordedPos = calcMeanPoint(_gazePoints);
+            targets[index].size = size;
+            targets[index].position = GazePoint(x: pos.dx + size.width / 2, y: pos.dy + size.height / 2);
           }
           if (_start == 0) {
             setState(() {
               timer.cancel();
-              targets[c - 1].hide();
+              targets[index].hide();
             });
-            await iterateTest(c - 1);
+            await iterateTest(index);
           } else {
             setState(() {
               _start--;
@@ -132,9 +138,6 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
           }
         },
       );
-      if (c == 0) {
-        // subscription.cancel();
-      }
     }
 
     iterateTest(counter);
@@ -161,6 +164,7 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     _size = ScreenSize(height, width);
+    var targets = userTest.targetResults;
 
     return Container(
       color: Colors.white,
@@ -228,51 +232,44 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
                           ),
                           ElevatedButton(
                             onPressed: () {
-                              // TODO: create CSV
-                              var matrix = _generateDataMatrix(this._userData);
-                              saveData(matrix);
+                              userTest.gazeData = this._userData;
+                              saveTestResultToLocalStorage(userTest, _size, dimensions);
+                              saveDataToLocalStorage(userTest, _size, dimensions);
 
-                              showModalBottomSheet<void>(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  var horizontal = 0.0;
-                                  var vertical = 0.0;
-                                  for (var target in targets) {
-                                    target.recordedPos = target.getRecordedPosInPx(_size, dimensions, target.recordedPos);
-                                    horizontal += calcAngle((target.position.x - target.recordedPos.x).abs(), 600, _size.width, 69);
-                                    vertical += calcAngle((target.position.y - target.recordedPos.y).abs(), 600, _size.width, 150);
-                                  }
-                                  var angleHorizontal = horizontal / targets.length;
-                                  var angleVertical = vertical / targets.length;
+                              // var matrix = _generateDataMatrix(this._userData);
+                              // saveDataToLocalStorage(matrix);
 
-                                  return Container(
-                                    height: 500,
-                                    color: Colors.amber,
-                                    child: Center(
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: <Widget>[
-                                          _createRecording("Top Left", targets[0]),
-                                          _createRecording("Top Right", targets[1]),
-                                          _createRecording("Bottom Left", targets[3]),
-                                          _createRecording("Bottom Right", targets[4]),
-                                          _createRecording("Center", targets[2]),
-                                          _createAngle("Angle horizontal: ", angleHorizontal.toStringAsFixed(3)),
-                                          _createAngle("Angle vertical: ", angleVertical.toStringAsFixed(3)),
-                                          ElevatedButton(
-                                            child: const Text('Close BottomSheet'),
-                                            // onPressed: () => Navigator.pop(context),
-                                            onPressed: () {
-                                              generateCsv(context);
-                                            },
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                },
-                              );
+                              //   showModalBottomSheet<void>(
+                              //     context: context,
+                              //     builder: (BuildContext context) {
+                              //       return Container(
+                              //         height: 700,
+                              //         color: Colors.amber,
+                              //         child: Center(
+                              //           child: Column(
+                              //             mainAxisAlignment: MainAxisAlignment.center,
+                              //             mainAxisSize: MainAxisSize.min,
+                              //             children: <Widget>[
+                              //               _createRecording("Top Left", targets[0]),
+                              //               _createRecording("Top Right", targets[1]),
+                              //               _createRecording("Bottom Left", targets[3]),
+                              //               _createRecording("Bottom Right", targets[4]),
+                              //               _createRecording("Center", targets[2]),
+                              //               _createAngle("Angle horizontal: ", angleHorizontal.toStringAsFixed(3)),
+                              //               _createAngle("Angle vertical: ", angleVertical.toStringAsFixed(3)),
+                              //               ElevatedButton(
+                              //                 child: const Text('Close BottomSheet'),
+                              //                 // onPressed: () => Navigator.pop(context),
+                              //                 onPressed: () {
+                              //                   generateCsv(context);
+                              //                 },
+                              //               )
+                              //             ],
+                              //           ),
+                              //         ),
+                              //       );
+                              //     },
+                              //   );
                             },
                             child: Text("Show results"),
                           ),
@@ -339,6 +336,6 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
   }
 
   List<List<String>> _generateDataMatrix(List<Gaze> gazeData) {
-    return gazeData.map((gaze) => [gaze.sx, gaze.sy, gaze.timeStampDevice, gaze.timeStampEyeTracker]).toList();
+    return gazeData.map((gaze) => [gaze.sx, gaze.sy, gaze.getTimeDevice, gaze.getTimeEyeTracker]).toList();
   }
 }

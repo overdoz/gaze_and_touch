@@ -40,7 +40,7 @@ class GazeReceiver {
                 double combY;
 
                 var timeStampEyeTracker = parsedGazeData[deviceTimeStamp];
-                var timeStamp = DateTime.now().toUtc().toString();
+                // var timeStamp = DateTime.now().toUtc().toString();
 
                 parsedGazeData = jsonDecode(eyeTrackerData);
 
@@ -66,7 +66,7 @@ class GazeReceiver {
 
                 var gazePoint = GazePoint(x: combX, y: combY);
 
-                yield Gaze(gazePoint: gazePoint, timeStampEyeTracker: timeStampEyeTracker, timeStampDevice: timeStamp);
+                yield Gaze(gazePoint: gazePoint, timeStampEyeTracker: timeStampEyeTracker, timeStampDevice: 1);
               } catch (e) {
                 // print(e);
               }
@@ -88,12 +88,14 @@ class GazeReceiver {
             if (event == RawSocketEvent.read) {
               Datagram dg = udpSocket.receive();
 
-              double combX = 1000.0;
-              double combY = 1000.0;
+              double combX = 0.0;
+              double combY = 0.0;
 
               /// read input coordinates and find semicolon for later parsing
               var eyeTrackerData = utf8.decode(dg.data);
               var timeStamp = DateTime.now().toUtc().toString();
+              var leftEye = [];
+              var rightEye = [];
 
               // print(eyeTrackerData);
 
@@ -105,33 +107,33 @@ class GazeReceiver {
                 print(e);
               }
 
-              var timeStampDevice = "00000000"; // parsedGazeData[deviceTimeStamp];
-              var timeStampSystem = "00000000"; // parsedGazeData[systemTimeStamp];
+              var timeStampDevice = 0; // parsedGazeData[deviceTimeStamp];
+              var timeStampSystem = 0; // parsedGazeData[systemTimeStamp];
 
               try {
-                timeStampDevice = parsedGazeData[deviceTimeStamp];
-                timeStampSystem = parsedGazeData[systemTimeStamp];
+                timeStampDevice = parsedGazeData[deviceTimeStamp] ?? 0;
+                timeStampSystem = parsedGazeData[systemTimeStamp] ?? 0;
               } catch (e) {
                 print(e);
               }
 
-              // print(parsedGazeData[leftGazePointOnDisplayArea]);
-              // print(parsedGazeData[rightGazePointOnDisplayArea]);
+              try {
+                leftEye = parsedGazeData[leftGazePointOnDisplayArea] ?? 0.0;
+
+                rightEye = parsedGazeData[rightGazePointOnDisplayArea] ?? 0.0;
+              } catch (e) {
+                print("Eye data parsing error:");
+                print(e);
+              }
 
               try {
-                var leftEye = parsedGazeData[leftGazePointOnDisplayArea];
-                // leftEyeY = parsedGazeData[leftGazePointOnDisplayArea][1];
-
-                var rightEye = parsedGazeData[rightGazePointOnDisplayArea];
-                // rightEyeY = parsedGazeData[rightGazePointOnDisplayArea][1];
-
                 /// Mean of left and right eye x coordinate
-                if (leftEye[0] != null && rightEye[0] != null) {
+                if (leftEye.isNotEmpty && rightEye.isNotEmpty && leftEye[0] != null && rightEye[0] != null) {
                   combX = (leftEye[0] + rightEye[0]) / 2;
                 }
 
                 /// Mean of left and right eye y coordinate
-                if (leftEye[1] != null && rightEye[1] != null) {
+                if (leftEye.isNotEmpty && rightEye.isNotEmpty && leftEye[1] != null && rightEye[1] != null) {
                   combY = (leftEye[1] + rightEye[1]) / 2;
                 }
 
@@ -143,7 +145,8 @@ class GazeReceiver {
                 gazePoints.removeAt(0);
                 callback();
               } catch (e) {
-                // print(e);
+                print("Add gaze error:");
+                print(e);
               }
               // TODO: decrease rerendering
             }

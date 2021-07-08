@@ -5,7 +5,7 @@ import 'dart:typed_data';
 // import 'package:udp/udp.dart';
 import 'package:flutter/material.dart';
 import 'package:gazeAndTouch/models/screens_model.dart';
-import 'package:gazeAndTouch/screens/accuracy_screen.dart';
+import 'package:gazeAndTouch/screens/test_setup_screen.dart';
 import 'package:gazeAndTouch/utils/gaze_listener.dart';
 import 'package:gazeAndTouch/utils/math.dart';
 
@@ -189,7 +189,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       print(dimensions);
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => AccuracyScreen(dimensions: dimensions)),
+                        // MaterialPageRoute(builder: (context) => AccuracyScreen(dimensions: dimensions)),
+                        MaterialPageRoute(builder: (context) => TestSetup(dimensions: dimensions)),
                       );
                     },
                     child: Text("Accuracy Test"),

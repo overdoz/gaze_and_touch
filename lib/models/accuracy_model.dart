@@ -11,6 +11,8 @@ class AccuracyTarget {
   Size size;
   GlobalKey key;
   double opacity;
+  double angleHorizontal = 0.0;
+  double angleVertical = 0.0;
 
   AccuracyTarget({this.name, this.position, this.recordedPos, this.size, this.opacity});
 
@@ -27,5 +29,13 @@ class AccuracyTarget {
     var y = double.parse(mapNum(pos.y, dimensions["inputA height"], dimensions["inputB height"], 0, size.height).toStringAsFixed(1));
 
     return GazePoint(x: x, y: y);
+  }
+
+  double getAngleHorizontal(ScreenSize size) {
+    return calcAngle((position.x - recordedPos.x).abs(), 600, size.width, 69);
+  }
+
+  double getAngleVertical(ScreenSize size) {
+    return calcAngle((position.y - recordedPos.y).abs(), 600, size.height, 150);
   }
 }
