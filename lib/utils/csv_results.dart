@@ -41,22 +41,23 @@ saveTestResultToLocalStorage(UserTest userTest, ScreenSize size, Map<String, dou
   var angleVertical = vertical / userTest.targetResults.length;
 
   List<List<String>> data = [
-    ["Name", "Date", "Test Type"],
-    [userTest.name, userTest.date, userTest.testType],
-    ["Angle horizontal combined", "Angle vertical combined"],
-    [angleHorizontal.toString(), angleVertical.toString()],
-    ["Target name", "X", "X^", "Angle horizontal", "Y", "Y^", "Angle vertical"],
+    ["User id", "Date", "Test Type", "Target id", "X", "X^", "Angle horizontal", "Angle horizontal combined", "Y", "Y^", "Angle vertical", "Angle vertical combined"],
   ];
 
   userTest.targetResults.forEach((d) {
     data.add([
+      userTest.name,
+      userTest.date,
+      userTest.testType,
       d.name,
       d.position.sx,
       d.recordedPos.sx,
       d.getAngleHorizontal(size).toString(),
+      angleHorizontal.toString(),
       d.position.sy,
       d.recordedPos.sy,
-      d.getAngleVertical(size).toString()
+      d.getAngleVertical(size).toString(),
+      angleVertical.toString()
     ]);
   });
 
@@ -74,14 +75,12 @@ saveTestResultToLocalStorage(UserTest userTest, ScreenSize size, Map<String, dou
 
 saveDataToLocalStorage(UserTest userTest, ScreenSize size, Map<String, double> dimensions) async {
   List<List<String>> data = [
-    ["Name", "Date", "Test Type"],
-    [userTest.name, userTest.date, userTest.testType],
-    ["X", "Y", "Timestamp Device", "Timestamp EyeTracker"],
+    ["User Id", "Date", "Test Type", "X px", "Y px", "X", "Y", "Timestamp Device", "Timestamp EyeTracker", "Target"],
   ];
 
   userTest.gazeData.forEach((e) {
     GazePoint pointInPx = e.gazePoint.getRecordedPosInPx(size, dimensions, e.gazePoint);
-    data.add([pointInPx.sx, pointInPx.sy, e.getTimeDevice, e.getTimeEyeTracker]);
+    data.add([userTest.name, userTest.date, userTest.testType, pointInPx.sx, pointInPx.sy, e.sx, e.sy, e.getTimeDevice, e.getTimeEyeTracker, e.currentTarget]);
   });
 
   // var status = await Permission.storage.status;

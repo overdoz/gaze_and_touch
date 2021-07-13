@@ -13,8 +13,13 @@ class GazeReceiver {
   final VoidCallback callbackx;
   final List<Gaze> gazeList;
   final List<GazePoint> gazePointList;
+  String currentTestTarget = "";
 
   GazeReceiver(this.callbackx, this.gazeList, this.gazePointList);
+
+  setTarget(String testType) {
+    currentTestTarget = testType;
+  }
 
   Stream<Gaze> createGazeStream() async* {
     print("create Stream");
@@ -93,7 +98,7 @@ class GazeReceiver {
 
               /// read input coordinates and find semicolon for later parsing
               var eyeTrackerData = utf8.decode(dg.data);
-              var timeStamp = DateTime.now().toUtc().toString();
+              var timeStamp = DateTime.now().millisecondsSinceEpoch;
               var leftEye = [];
               var rightEye = [];
 
@@ -108,11 +113,10 @@ class GazeReceiver {
               }
 
               var timeStampDevice = 0; // parsedGazeData[deviceTimeStamp];
-              var timeStampSystem = 0; // parsedGazeData[systemTimeStamp];
+              var timeStampSystem = 69; // DateTime.now().millisecondsSinceEpoch; // parsedGazeData[systemTimeStamp];
 
               try {
                 timeStampDevice = parsedGazeData[deviceTimeStamp] ?? 0;
-                timeStampSystem = parsedGazeData[systemTimeStamp] ?? 0;
               } catch (e) {
                 print(e);
               }
@@ -140,7 +144,7 @@ class GazeReceiver {
                 // print("x: $combX y: $combY");
                 var gazePoint = GazePoint(x: combX, y: combY);
 
-                gazeList.add(Gaze(gazePoint: gazePoint, timeStampEyeTracker: timeStampDevice, timeStampDevice: timeStampSystem));
+                gazeList.add(Gaze(gazePoint: gazePoint, timeStampEyeTracker: timeStampDevice, timeStampDevice: timeStamp, currentTarget: currentTestTarget));
                 gazePoints.add(gazePoint);
                 gazePoints.removeAt(0);
                 callback();

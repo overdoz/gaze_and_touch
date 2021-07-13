@@ -5,6 +5,7 @@ class Gaze {
   final GazePoint gazePoint;
   final int timeStampEyeTracker;
   final int timeStampDevice;
+  final String currentTarget;
 
   List get studyData {
     return [gazePoint.x, gazePoint.y, timeStampEyeTracker, timeStampDevice];
@@ -31,10 +32,10 @@ class Gaze {
   }
 
   String get getTimeDevice {
-    return timeStampEyeTracker.toString();
+    return timeStampDevice.toString();
   }
 
-  Gaze({this.gazePoint, this.timeStampEyeTracker, this.timeStampDevice});
+  Gaze({this.gazePoint, this.timeStampEyeTracker, this.timeStampDevice, this.currentTarget});
 }
 
 class GazePoint {

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:core';
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -49,7 +50,7 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
   // ];
 
   /// listens to incoming gaze data
-  GazeReceiver _gazeInput;
+  GazeReceiver gazeInput;
   Stream<Gaze> _gazeStream;
 
   Timer _timer;
@@ -60,7 +61,7 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
   ScreenSize _size = new ScreenSize(0, 0);
 
   _AccuracyScreenState({this.dimensions, this.userTest}) {
-    _gazeInput = new GazeReceiver(this.callback, this._userData, this._gazePoints);
+    gazeInput = new GazeReceiver(this.callback, this._userData, this._gazePoints);
   }
 
   void callback() {
@@ -70,7 +71,7 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
   @override
   initState() {
     super.initState();
-    _gazeInput.init(this._gazePoints, this.callback);
+    gazeInput.init(this._gazePoints, this.callback);
     // _gazeStream = _gazeInput.createGazeStream();
     // _gazeInput.init();
     // var subscription = _gazeStream.listen((gaze) {
@@ -84,6 +85,7 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
     //   });
     // });
     print("init State");
+    // userTest.targetResults = shuffle(userTest.targetResults);
     startTimer();
 
     // subscription.cancel();
@@ -91,46 +93,40 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
 
   // TODO: collect IMU data
   Future<void> startTest(int counter) async {
-    /// listen to stream
-    // var subscription = _gazeStream.listen((gaze) {
-    //   setState(() {
-    //     /// collect data for rendering
-    //     _gazePoints.add(gaze.gazePoint);
-    //     _gazePoints.removeAt(0);
-    //
-    //     /// collect data for study
-    //     _userData.add(gaze);
-    //   });
-    // });
+    var targetIndex = [for (var i = 0; i < userTest.targetResults.length; i++) i];
+    targetIndex = shuffle(targetIndex);
 
     Future<void> iterateTest(int c) async {
-      var targets = userTest.targetResults;
-      var index = c - 1;
-
       if (c == 0) return;
+
+      var targets = userTest.targetResults;
+      var randomIndex = targetIndex.removeLast();
+      this.gazeInput.setTarget((targets[randomIndex].name));
+
       _start = 3;
       setState(() {
-        targets[index].show();
+        targets[randomIndex].show();
       });
       const oneSec = const Duration(seconds: 1);
       _timer = new Timer.periodic(
         oneSec,
         (Timer timer) async {
           if (_start == 1) {
-            var pos = getWidgetPosition(keys[index]);
-            var size = getWidgetSize(keys[index]);
+            var pos = getWidgetPosition(keys[randomIndex]);
+            var size = getWidgetSize(keys[randomIndex]);
 
             /// record all metrics when the timer hits 1
-            targets[index].recordedPos = calcMeanPoint(_gazePoints);
-            targets[index].size = size;
-            targets[index].position = GazePoint(x: pos.dx + size.width / 2, y: pos.dy + size.height / 2);
+            targets[randomIndex].recordedPos = calcMeanPoint(_gazePoints);
+            targets[randomIndex].size = size;
+            targets[randomIndex].position = GazePoint(x: pos.dx + size.width / 2, y: pos.dy + size.height / 2);
           }
           if (_start == 0) {
             setState(() {
               timer.cancel();
-              targets[index].hide();
+              targets[randomIndex].hide();
+              this.gazeInput.setTarget("");
             });
-            await iterateTest(index);
+            await iterateTest(c - 1);
           } else {
             setState(() {
               _start--;
@@ -337,5 +333,21 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
 
   List<List<String>> _generateDataMatrix(List<Gaze> gazeData) {
     return gazeData.map((gaze) => [gaze.sx, gaze.sy, gaze.getTimeDevice, gaze.getTimeEyeTracker]).toList();
+  }
+
+  List shuffle(List items) {
+    var random = new Random();
+
+    // Go through all elements.
+    for (var i = items.length - 1; i > 0; i--) {
+      // Pick a pseudorandom number according to the list length
+      var n = random.nextInt(i + 1);
+
+      var temp = items[i];
+      items[i] = items[n];
+      items[n] = temp;
+    }
+
+    return items;
   }
 }
