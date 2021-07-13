@@ -6,17 +6,18 @@ class Gaze {
   final int timeStampEyeTracker;
   final int timeStampDevice;
   final String currentTarget;
+  final GazePoint currentTargetPosition;
 
   List get studyData {
     return [gazePoint.x, gazePoint.y, timeStampEyeTracker, timeStampDevice];
   }
 
   String get sx {
-    return gazePoint.x.toString();
+    return gazePoint.x.toStringAsFixed(4);
   }
 
   String get sy {
-    return gazePoint.y.toString();
+    return gazePoint.y.toStringAsFixed(4);
   }
 
   double get dx {
@@ -35,7 +36,7 @@ class Gaze {
     return timeStampDevice.toString();
   }
 
-  Gaze({this.gazePoint, this.timeStampEyeTracker, this.timeStampDevice, this.currentTarget});
+  Gaze({this.gazePoint, this.timeStampEyeTracker, this.timeStampDevice, this.currentTarget, this.currentTargetPosition});
 }
 
 class GazePoint {
@@ -45,16 +46,20 @@ class GazePoint {
   GazePoint({this.x, this.y});
 
   String get sx {
-    return x.toString();
+    return x.toStringAsFixed(4);
+    ;
   }
 
   String get sy {
-    return y.toString();
+    return y.toStringAsFixed(4);
+    ;
   }
 
   GazePoint getRecordedPosInPx(ScreenSize size, Map<String, double> dimensions, GazePoint pos) {
-    var x = double.parse(mapNum(pos.x, dimensions["inputA width"], dimensions["inputB width"], 0, size.width).toStringAsFixed(1));
-    var y = double.parse(mapNum(pos.y, dimensions["inputA height"], dimensions["inputB height"], 0, size.height).toStringAsFixed(1));
+    if (pos.x == 0.0 && pos.y == 0.0) return GazePoint.initial();
+
+    var x = double.parse(mapNum(pos.x, dimensions["inputA width"], dimensions["inputB width"], 0, size.width).toStringAsFixed(4));
+    var y = double.parse(mapNum(pos.y, dimensions["inputA height"], dimensions["inputB height"], 0, size.height).toStringAsFixed(4));
 
     return GazePoint(x: x, y: y);
   }

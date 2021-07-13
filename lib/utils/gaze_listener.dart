@@ -14,11 +14,16 @@ class GazeReceiver {
   final List<Gaze> gazeList;
   final List<GazePoint> gazePointList;
   String currentTestTarget = "";
+  GazePoint currentTargetPosition = GazePoint.initial();
 
   GazeReceiver(this.callbackx, this.gazeList, this.gazePointList);
 
   setTarget(String testType) {
     currentTestTarget = testType;
+  }
+
+  setTargetPosition(GazePoint gazePoint) {
+    currentTargetPosition = gazePoint;
   }
 
   Stream<Gaze> createGazeStream() async* {
@@ -144,7 +149,8 @@ class GazeReceiver {
                 // print("x: $combX y: $combY");
                 var gazePoint = GazePoint(x: combX, y: combY);
 
-                gazeList.add(Gaze(gazePoint: gazePoint, timeStampEyeTracker: timeStampDevice, timeStampDevice: timeStamp, currentTarget: currentTestTarget));
+                gazeList
+                    .add(Gaze(gazePoint: gazePoint, timeStampEyeTracker: timeStampDevice, timeStampDevice: timeStamp, currentTarget: currentTestTarget, currentTargetPosition: currentTargetPosition));
                 gazePoints.add(gazePoint);
                 gazePoints.removeAt(0);
                 callback();

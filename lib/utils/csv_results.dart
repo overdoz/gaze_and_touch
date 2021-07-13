@@ -75,12 +75,25 @@ saveTestResultToLocalStorage(UserTest userTest, ScreenSize size, Map<String, dou
 
 saveDataToLocalStorage(UserTest userTest, ScreenSize size, Map<String, double> dimensions) async {
   List<List<String>> data = [
-    ["User Id", "Date", "Test Type", "X px", "Y px", "X", "Y", "Timestamp Device", "Timestamp EyeTracker", "Target"],
+    ["User Id", "Date", "Test Type", "X px", "Y px", "X", "Y", "Timestamp Device", "Timestamp EyeTracker", "Target", "Target X", "Target Y"],
   ];
 
   userTest.gazeData.forEach((e) {
     GazePoint pointInPx = e.gazePoint.getRecordedPosInPx(size, dimensions, e.gazePoint);
-    data.add([userTest.name, userTest.date, userTest.testType, pointInPx.sx, pointInPx.sy, e.sx, e.sy, e.getTimeDevice, e.getTimeEyeTracker, e.currentTarget]);
+    data.add([
+      userTest.name,
+      userTest.date,
+      userTest.testType,
+      pointInPx.sx,
+      pointInPx.sy,
+      e.sx,
+      e.sy,
+      e.getTimeDevice,
+      e.getTimeEyeTracker,
+      e.currentTarget,
+      e.currentTargetPosition.sx,
+      e.currentTargetPosition.sy
+    ]);
   });
 
   // var status = await Permission.storage.status;

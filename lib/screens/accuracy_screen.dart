@@ -93,6 +93,7 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
 
   // TODO: collect IMU data
   Future<void> startTest(int counter) async {
+    /// create indices and shuffle them
     var targetIndex = [for (var i = 0; i < userTest.targetResults.length; i++) i];
     targetIndex = shuffle(targetIndex);
 
@@ -101,7 +102,15 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
 
       var targets = userTest.targetResults;
       var randomIndex = targetIndex.removeLast();
+
+      /// initialize target infos
+      var pos = getWidgetPosition(keys[randomIndex]);
+      var size = getWidgetSize(keys[randomIndex]);
+      var targetPosition = GazePoint(x: pos.dx + size.width / 2, y: pos.dy + size.height / 2);
+
+      /// log target infos
       this.gazeInput.setTarget((targets[randomIndex].name));
+      this.gazeInput.setTargetPosition(targetPosition);
 
       _start = 3;
       setState(() {
@@ -112,13 +121,10 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
         oneSec,
         (Timer timer) async {
           if (_start == 1) {
-            var pos = getWidgetPosition(keys[randomIndex]);
-            var size = getWidgetSize(keys[randomIndex]);
-
             /// record all metrics when the timer hits 1
             targets[randomIndex].recordedPos = calcMeanPoint(_gazePoints);
             targets[randomIndex].size = size;
-            targets[randomIndex].position = GazePoint(x: pos.dx + size.width / 2, y: pos.dy + size.height / 2);
+            targets[randomIndex].position = targetPosition;
           }
           if (_start == 0) {
             setState(() {

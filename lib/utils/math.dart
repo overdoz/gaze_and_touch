@@ -34,8 +34,9 @@ Map<String, double> calcMeasurements(double screenSize, double aspectRatio, doub
   var inputBWidth = inputAWidth + (widthMobile / widthScreen);
 
   /// vertical starting and endpoint in percent
-  var inputAHeight = marginVertical / heightScreen; // correction
-  var inputBHeight = inputAHeight + (heightMobile / heightScreen);
+  /// Since the phone starts at top of the display we start at zero and end at mobile height
+  var inputAHeight = 0.0; // marginVertical / heightScreen; // correction
+  var inputBHeight = (heightMobile / heightScreen);
 
   /// TODO: get aspect ratio from context
 
