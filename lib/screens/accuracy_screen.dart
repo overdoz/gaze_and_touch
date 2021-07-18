@@ -10,6 +10,7 @@ import 'package:gazeAndTouch/models/user_test_model.dart';
 import 'package:gazeAndTouch/utils/csv_results.dart';
 import 'package:gazeAndTouch/utils/math.dart';
 import 'package:gazeAndTouch/utils/widget_details.dart';
+import 'package:sensors_plus/sensors_plus.dart';
 
 import '../models/screens_model.dart';
 import '../shapes/painters.dart';
@@ -87,6 +88,10 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
     print("init State");
     // userTest.targetResults = shuffle(userTest.targetResults);
     startTimer();
+
+    gyroscopeEvents.listen((GyroscopeEvent event) {
+      print(event);
+    });
 
     // subscription.cancel();
   }

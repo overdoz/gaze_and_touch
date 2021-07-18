@@ -75,7 +75,7 @@ saveTestResultToLocalStorage(UserTest userTest, ScreenSize size, Map<String, dou
 
 saveDataToLocalStorage(UserTest userTest, ScreenSize size, Map<String, double> dimensions) async {
   List<List<String>> data = [
-    ["User Id", "Date", "Test Type", "X px", "Y px", "X", "Y", "Timestamp Device", "Timestamp EyeTracker", "Target", "Target X", "Target Y"],
+    ["User Id", "Date", "Test Type", "X px", "Y px", "X", "Y", "Timestamp Device", "Timestamp EyeTracker", "Target", "Target X", "Target Y", "Acc X", "Acc Y", "Acc Z", "Gy X", "Gy Y", "Gy Z"],
   ];
 
   userTest.gazeData.forEach((e) {
@@ -92,7 +92,13 @@ saveDataToLocalStorage(UserTest userTest, ScreenSize size, Map<String, double> d
       e.getTimeEyeTracker,
       e.currentTarget,
       e.currentTargetPosition.sx,
-      e.currentTargetPosition.sy
+      e.currentTargetPosition.sy,
+      e.accelerometerEvent.x.toString(),
+      e.accelerometerEvent.y.toString(),
+      e.accelerometerEvent.z.toString(),
+      e.gyroscopeEvent.x.toString(),
+      e.gyroscopeEvent.y.toString(),
+      e.gyroscopeEvent.z.toString()
     ]);
   });
 

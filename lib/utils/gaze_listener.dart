@@ -3,6 +3,7 @@ import 'dart:core';
 import 'dart:io';
 
 import 'package:gazeAndTouch/models/gaze_model.dart';
+import 'package:sensors_plus/sensors_plus.dart';
 
 import '../constants.dart';
 
@@ -89,7 +90,18 @@ class GazeReceiver {
   }
 
   Future<void> init(List<GazePoint> gazePoints, Function callback) async {
-    print("create Stream");
+    AccelerometerEvent accelerometerEvent;
+    GyroscopeEvent gyroscopeEvent;
+
+    accelerometerEvents.listen((AccelerometerEvent event) {
+      // print(event);
+      accelerometerEvent = event;
+    });
+
+    gyroscopeEvents.listen((GyroscopeEvent event) {
+      //print(event);
+      gyroscopeEvent = event;
+    });
 
     RawDatagramSocket.bind(addressesIListenFrom, portIListenOn, reusePort: false).then(
       (RawDatagramSocket udpSocket) {
@@ -149,8 +161,14 @@ class GazeReceiver {
                 // print("x: $combX y: $combY");
                 var gazePoint = GazePoint(x: combX, y: combY);
 
-                gazeList
-                    .add(Gaze(gazePoint: gazePoint, timeStampEyeTracker: timeStampDevice, timeStampDevice: timeStamp, currentTarget: currentTestTarget, currentTargetPosition: currentTargetPosition));
+                gazeList.add(Gaze(
+                    gazePoint: gazePoint,
+                    timeStampEyeTracker: timeStampDevice,
+                    timeStampDevice: timeStamp,
+                    currentTarget: currentTestTarget,
+                    currentTargetPosition: currentTargetPosition,
+                    accelerometerEvent: accelerometerEvent,
+                    gyroscopeEvent: gyroscopeEvent));
                 gazePoints.add(gazePoint);
                 gazePoints.removeAt(0);
                 callback();

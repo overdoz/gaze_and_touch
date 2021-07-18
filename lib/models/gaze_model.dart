@@ -1,5 +1,6 @@
 import 'package:gazeAndTouch/models/screens_model.dart';
 import 'package:gazeAndTouch/utils/math.dart';
+import 'package:sensors_plus/sensors_plus.dart';
 
 class Gaze {
   final GazePoint gazePoint;
@@ -7,6 +8,8 @@ class Gaze {
   final int timeStampDevice;
   final String currentTarget;
   final GazePoint currentTargetPosition;
+  final AccelerometerEvent accelerometerEvent;
+  final GyroscopeEvent gyroscopeEvent;
 
   List get studyData {
     return [gazePoint.x, gazePoint.y, timeStampEyeTracker, timeStampDevice];
@@ -36,7 +39,7 @@ class Gaze {
     return timeStampDevice.toString();
   }
 
-  Gaze({this.gazePoint, this.timeStampEyeTracker, this.timeStampDevice, this.currentTarget, this.currentTargetPosition});
+  Gaze({this.gazePoint, this.timeStampEyeTracker, this.timeStampDevice, this.currentTarget, this.currentTargetPosition, this.accelerometerEvent, this.gyroscopeEvent});
 }
 
 class GazePoint {
