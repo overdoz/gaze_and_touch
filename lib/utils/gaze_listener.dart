@@ -118,6 +118,9 @@ class GazeReceiver {
               var timeStamp = DateTime.now().millisecondsSinceEpoch;
               var leftEye = [];
               var rightEye = [];
+              var leftPupilDiameter = 0.0;
+              var rightPupilDiameter = 0.0;
+              var timeStampDevice = 0; // parsedGazeData[deviceTimeStamp];
 
               // print(eyeTrackerData);
 
@@ -129,9 +132,6 @@ class GazeReceiver {
                 print(e);
               }
 
-              var timeStampDevice = 0; // parsedGazeData[deviceTimeStamp];
-              var timeStampSystem = 69; // DateTime.now().millisecondsSinceEpoch; // parsedGazeData[systemTimeStamp];
-
               try {
                 timeStampDevice = parsedGazeData[deviceTimeStamp] ?? 0;
               } catch (e) {
@@ -142,6 +142,9 @@ class GazeReceiver {
                 leftEye = parsedGazeData[leftGazePointOnDisplayArea] ?? 0.0;
 
                 rightEye = parsedGazeData[rightGazePointOnDisplayArea] ?? 0.0;
+
+                leftPupilDiameter = parsedGazeData[leftPupilDiameter] ?? 0.0;
+                rightPupilDiameter = parsedGazeData[rightPupilDiameter] ?? 0.0;
               } catch (e) {
                 print("Eye data parsing error:");
                 print(e);

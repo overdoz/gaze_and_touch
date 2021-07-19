@@ -98,7 +98,9 @@ saveDataToLocalStorage(UserTest userTest, ScreenSize size, Map<String, double> d
       e.accelerometerEvent.z.toString(),
       e.gyroscopeEvent.x.toString(),
       e.gyroscopeEvent.y.toString(),
-      e.gyroscopeEvent.z.toString()
+      e.gyroscopeEvent.z.toString(),
+      e.leftPupilDiameter.toString(),
+      e.rightPupilDiameter.toString()
     ]);
   });
 

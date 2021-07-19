@@ -10,6 +10,8 @@ class Gaze {
   final GazePoint currentTargetPosition;
   final AccelerometerEvent accelerometerEvent;
   final GyroscopeEvent gyroscopeEvent;
+  final double leftPupilDiameter;
+  final double rightPupilDiameter;
 
   List get studyData {
     return [gazePoint.x, gazePoint.y, timeStampEyeTracker, timeStampDevice];
@@ -39,7 +41,16 @@ class Gaze {
     return timeStampDevice.toString();
   }
 
-  Gaze({this.gazePoint, this.timeStampEyeTracker, this.timeStampDevice, this.currentTarget, this.currentTargetPosition, this.accelerometerEvent, this.gyroscopeEvent});
+  Gaze(
+      {this.gazePoint,
+      this.timeStampEyeTracker,
+      this.timeStampDevice,
+      this.currentTarget,
+      this.currentTargetPosition,
+      this.accelerometerEvent,
+      this.gyroscopeEvent,
+      this.leftPupilDiameter,
+      this.rightPupilDiameter});
 }
 
 class GazePoint {
