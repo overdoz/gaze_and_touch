@@ -91,11 +91,17 @@ class GazeReceiver {
 
   Future<void> init(List<GazePoint> gazePoints, Function callback) async {
     AccelerometerEvent accelerometerEvent;
+	UserAccelerometerEvent userAccelerometerEvent;
     GyroscopeEvent gyroscopeEvent;
 
     accelerometerEvents.listen((AccelerometerEvent event) {
       // print(event);
       accelerometerEvent = event;
+    });
+	
+	userAccelerometerEvents.listen((UserAccelerometerEvent event) {
+      // print(event);
+      userAccelerometerEvent = event;
     });
 
     gyroscopeEvents.listen((GyroscopeEvent event) {
@@ -171,6 +177,7 @@ class GazeReceiver {
                     currentTarget: currentTestTarget,
                     currentTargetPosition: currentTargetPosition,
                     accelerometerEvent: accelerometerEvent,
+					userAccelerometerEvent: userAccelerometerEvent,
                     gyroscopeEvent: gyroscopeEvent));
                 gazePoints.add(gazePoint);
                 gazePoints.removeAt(0);
