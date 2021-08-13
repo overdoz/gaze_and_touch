@@ -122,8 +122,6 @@ class GazeReceiver {
               var rightPupilDiameter = 0.0;
               var timeStampDevice = 0; // parsedGazeData[deviceTimeStamp];
 
-              // print(eyeTrackerData);
-
               Map<String, dynamic> parsedGazeData;
 
               try {
@@ -139,12 +137,16 @@ class GazeReceiver {
               }
 
               try {
+                leftPupilDiameter = parsedGazeData["left_pupil_diameter"] ?? 0.0;
+                rightPupilDiameter = parsedGazeData["right_pupil_diameter"] ?? 0.0;
+              } catch (e) {
+                print("Pupil data parsing error:");
+                print(e);
+              }
+
+              try {
                 leftEye = parsedGazeData[leftGazePointOnDisplayArea] ?? 0.0;
-
                 rightEye = parsedGazeData[rightGazePointOnDisplayArea] ?? 0.0;
-
-                leftPupilDiameter = parsedGazeData[leftPupilDiameter] ?? 0.0;
-                rightPupilDiameter = parsedGazeData[rightPupilDiameter] ?? 0.0;
               } catch (e) {
                 print("Eye data parsing error:");
                 print(e);
@@ -165,13 +167,16 @@ class GazeReceiver {
                 var gazePoint = GazePoint(x: combX, y: combY);
 
                 gazeList.add(Gaze(
-                    gazePoint: gazePoint,
-                    timeStampEyeTracker: timeStampDevice,
-                    timeStampDevice: timeStamp,
-                    currentTarget: currentTestTarget,
-                    currentTargetPosition: currentTargetPosition,
-                    accelerometerEvent: accelerometerEvent,
-                    gyroscopeEvent: gyroscopeEvent));
+                  gazePoint: gazePoint,
+                  timeStampEyeTracker: timeStampDevice,
+                  timeStampDevice: timeStamp,
+                  currentTarget: currentTestTarget,
+                  currentTargetPosition: currentTargetPosition,
+                  accelerometerEvent: accelerometerEvent,
+                  gyroscopeEvent: gyroscopeEvent,
+                  leftPupilDiameter: leftPupilDiameter,
+                  rightPupilDiameter: rightPupilDiameter,
+                ));
                 gazePoints.add(gazePoint);
                 gazePoints.removeAt(0);
                 callback();

@@ -75,7 +75,28 @@ saveTestResultToLocalStorage(UserTest userTest, ScreenSize size, Map<String, dou
 
 saveDataToLocalStorage(UserTest userTest, ScreenSize size, Map<String, double> dimensions) async {
   List<List<String>> data = [
-    ["User Id", "Date", "Test Type", "X px", "Y px", "X", "Y", "Timestamp Device", "Timestamp EyeTracker", "Target", "Target X", "Target Y", "Acc X", "Acc Y", "Acc Z", "Gy X", "Gy Y", "Gy Z"],
+    [
+      "User Id",
+      "Date",
+      "Test Type",
+      "X px",
+      "Y px",
+      "X",
+      "Y",
+      "Timestamp Device",
+      "Timestamp EyeTracker",
+      "Target",
+      "Target X",
+      "Target Y",
+      "Acc X",
+      "Acc Y",
+      "Acc Z",
+      "Gy X",
+      "Gy Y",
+      "Gy Z",
+      "Left pupil",
+      "Right pupil"
+    ],
   ];
 
   userTest.gazeData.forEach((e) {
@@ -93,14 +114,14 @@ saveDataToLocalStorage(UserTest userTest, ScreenSize size, Map<String, double> d
       e.currentTarget,
       e.currentTargetPosition.sx,
       e.currentTargetPosition.sy,
-      e.accelerometerEvent.x.toString(),
-      e.accelerometerEvent.y.toString(),
-      e.accelerometerEvent.z.toString(),
-      e.gyroscopeEvent.x.toString(),
-      e.gyroscopeEvent.y.toString(),
-      e.gyroscopeEvent.z.toString(),
-      e.leftPupilDiameter.toString(),
-      e.rightPupilDiameter.toString()
+      e.accelerometerEvent.x.toStringAsFixed(4),
+      e.accelerometerEvent.y.toStringAsFixed(4),
+      e.accelerometerEvent.z.toStringAsFixed(4),
+      e.gyroscopeEvent.x.toStringAsFixed(4),
+      e.gyroscopeEvent.y.toStringAsFixed(4),
+      e.gyroscopeEvent.z.toStringAsFixed(4),
+      e.leftPupilDiameter.toStringAsFixed(4),
+      e.rightPupilDiameter.toStringAsFixed(4)
     ]);
   });
 

@@ -4,6 +4,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gazeAndTouch/models/accuracy_model.dart';
 import 'package:gazeAndTouch/models/gaze_model.dart';
 import 'package:gazeAndTouch/models/user_test_model.dart';
@@ -167,6 +168,12 @@ class _AccuracyScreenState extends State<AccuracyScreen> {
 
   @override
   Widget build(BuildContext context) {
+    /// Orientation
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+
     /// Screen height and width
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
