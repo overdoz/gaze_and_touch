@@ -91,11 +91,17 @@ class GazeReceiver {
 
   Future<void> init(List<GazePoint> gazePoints, Function callback) async {
     AccelerometerEvent accelerometerEvent;
+    UserAccelerometerEvent userAccelerometerEvent;
     GyroscopeEvent gyroscopeEvent;
 
     accelerometerEvents.listen((AccelerometerEvent event) {
       // print(event);
       accelerometerEvent = event;
+    });
+
+    userAccelerometerEvents.listen((UserAccelerometerEvent event) {
+      // print(event);
+      userAccelerometerEvent = event;
     });
 
     gyroscopeEvents.listen((GyroscopeEvent event) {
@@ -165,18 +171,18 @@ class GazeReceiver {
 
                 // print("x: $combX y: $combY");
                 var gazePoint = GazePoint(x: combX, y: combY);
-
                 gazeList.add(Gaze(
-                  gazePoint: gazePoint,
-                  timeStampEyeTracker: timeStampDevice,
-                  timeStampDevice: timeStamp,
-                  currentTarget: currentTestTarget,
-                  currentTargetPosition: currentTargetPosition,
-                  accelerometerEvent: accelerometerEvent,
-                  gyroscopeEvent: gyroscopeEvent,
-                  leftPupilDiameter: leftPupilDiameter,
-                  rightPupilDiameter: rightPupilDiameter,
-                ));
+                    leftPupilDiameter: leftPupilDiameter,
+                    rightPupilDiameter: rightPupilDiameter,
+                    gazePoint: gazePoint,
+                    timeStampEyeTracker: timeStampDevice,
+                    timeStampDevice: timeStamp,
+                    currentTarget: currentTestTarget,
+                    currentTargetPosition: currentTargetPosition,
+                    accelerometerEvent: accelerometerEvent,
+                    userAccelerometerEvent: userAccelerometerEvent,
+                    gyroscopeEvent: gyroscopeEvent));
+
                 gazePoints.add(gazePoint);
                 gazePoints.removeAt(0);
                 callback();
@@ -185,6 +191,8 @@ class GazeReceiver {
                 print(e);
               }
               // TODO: decrease rerendering
+              // TODO: Spalte valid/notValid
+              // TODO: micro -> millisec
             }
           },
         );

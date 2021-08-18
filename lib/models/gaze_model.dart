@@ -9,6 +9,7 @@ class Gaze {
   final String currentTarget;
   final GazePoint currentTargetPosition;
   final AccelerometerEvent accelerometerEvent;
+  final UserAccelerometerEvent userAccelerometerEvent;
   final GyroscopeEvent gyroscopeEvent;
   final double leftPupilDiameter;
   final double rightPupilDiameter;
@@ -48,6 +49,7 @@ class Gaze {
       this.currentTarget,
       this.currentTargetPosition,
       this.accelerometerEvent,
+      this.userAccelerometerEvent,
       this.gyroscopeEvent,
       this.leftPupilDiameter,
       this.rightPupilDiameter});
